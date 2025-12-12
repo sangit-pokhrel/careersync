@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function AdminLoginPage() {
+export default function UserLoginPage() {
   const router = useRouter();
 
   const [emailOrUser, setEmailOrUser] = useState("");
@@ -11,15 +11,15 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
 
  
-  const ADMIN_USER = "admin";
-  const ADMIN_PASS = "admin123";
+  const ADMIN_USER = "user";
+  const ADMIN_PASS = "user123";
 
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
     if (emailOrUser === ADMIN_USER && password === ADMIN_PASS) {
-        sessionStorage.setItem("adminToken", "adminisloggedin");
-      router.push("/admin"); 
+        sessionStorage.setItem("userToken", "userisloggedin");
+      router.push("/user"); 
     } else {
       setError("Invalid credentials");
     }
@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
         boxShadow: "0 0 10px rgba(0,0,0,0.1)",
       }}
     >
-      <h2 style={{ textAlign: "center" }}>Admin Login</h2>
+      <h2 style={{ textAlign: "center" }}>User Dashboard Login</h2>
 
       <form onSubmit={handleLogin}>
         <div style={{ marginBottom: "15px" }}>

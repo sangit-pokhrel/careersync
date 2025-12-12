@@ -3,18 +3,20 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Skills from '@/components/admin/pages/Skills';
+
+import SavedJobs from '@/components/user/pages/SavedJobs';
 
 
-export default function SkillsPage() {
+
+export default function SavedJobsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const adminToken = sessionStorage.getItem('adminToken');
+    const userToken = sessionStorage.getItem('userToken');
     
-    if (!adminToken) {
-      router.push('/login');
+    if (!userToken) {
+      router.push('/user/login');
     } else {
       setIsLoading(false);
     }
@@ -31,5 +33,5 @@ export default function SkillsPage() {
     );
   }
 
-  return <Skills />;
+  return <SavedJobs />;
 }

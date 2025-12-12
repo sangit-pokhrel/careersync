@@ -3,17 +3,16 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import JobMatches from '@/components/admin/pages/JobMatches';
+import Settings from '@/components/user/pages/Settings';
 
-
-export default function JobMatchesPage() {
+export default function SettingsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const adminToken = sessionStorage.getItem('adminToken');
+    const userToken = sessionStorage.getItem('userToken');
     
-    if (!adminToken) {
+    if (!userToken) {
       router.push('/login');
     } else {
       setIsLoading(false);
@@ -31,5 +30,5 @@ export default function JobMatchesPage() {
     );
   }
 
-  return <JobMatches />;
+  return <Settings />;
 }

@@ -3,18 +3,16 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Support from '@/components/admin/pages/Support';
+import Applications from '@/components/user/pages/Applications';
 
-
-
-export default function SupportPage() {
+export default function ApplicationsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const adminToken = sessionStorage.getItem('adminToken');
+    const userToken = sessionStorage.getItem('userToken');
     
-    if (!adminToken) {
+    if (!userToken) {
       router.push('/login');
     } else {
       setIsLoading(false);
@@ -32,5 +30,5 @@ export default function SupportPage() {
     );
   }
 
-  return <Support />;
+  return <Applications />;
 }

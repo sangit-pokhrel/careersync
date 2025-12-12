@@ -1,6 +1,6 @@
 
 import Metadata from "next";
-import Applications from './../../../components/admin/pages/Applications';
+import Applications from '../../../components/user/pages/Applications';
 
 export const metadata: Metadata = {
   title: "Job Applications - CV Saathi Admin",

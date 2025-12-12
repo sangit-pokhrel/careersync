@@ -1,10 +1,10 @@
 import React from "react";
 
 export const metadata = {
-  title: "Admin Login",
+  title: "User Login",
 };
 
-export default function AdminLayout({
+export default function UserLayout({
   children,
 }: {
   children: React.ReactNode;

@@ -9,19 +9,19 @@ export default function Sidebar() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const handleLogout = () => {
-    sessionStorage.removeItem('adminToken');
-    router.push('/login');
+    sessionStorage.removeItem('userToken');
+    router.push('/user/login');
   };
 
   const menuItems = [
-    { name: 'Dashboard', icon: '📊', path: '/admin' },
-    { name: 'My Analyses', icon: '📝', path: '/admin/my-analyses' },
-    { name: 'Applications', icon: '📋', path: '/admin/applications' },
-    { name: 'Saved Jobs', icon: '💼', path: '/admin/saved-jobs' },
-    { name: 'Job Matches', icon: '🎯', path: '/admin/job-matches' },
-    { name: 'Support', icon: '💬', path: '/admin/support' },
-    { name: 'Skills', icon: '⚡', path: '/admin/skills' },
-    { name: 'Settings', icon: '⚙️', path: '/admin/settings' },
+    { name: 'Dashboard', icon: '📊', path: '/user' },
+    { name: 'My Analyses', icon: '📝', path: '/user/my-analyses' },
+    { name: 'Applications', icon: '📋', path: '/user/applications' },
+    { name: 'Saved Jobs', icon: '💼', path: '/user/saved-jobs' },
+    { name: 'Job Matches', icon: '🎯', path: '/user/job-matches' },
+    { name: 'Support', icon: '💬', path: '/user/support' },
+    { name: 'Skills', icon: '⚡', path: '/user/skills' },
+    { name: 'Settings', icon: '⚙️', path: '/user/settings' },
   ];
 
   return (

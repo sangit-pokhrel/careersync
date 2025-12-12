@@ -1,4 +1,3 @@
-// src/components/admin/pages/MyAnalyses.tsx
 'use client';
 
 import { useState } from 'react';

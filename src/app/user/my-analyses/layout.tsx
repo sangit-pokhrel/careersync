@@ -1,5 +1,5 @@
 
-import Metadata from "next";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "My Analyses - CV Saathi Admin",

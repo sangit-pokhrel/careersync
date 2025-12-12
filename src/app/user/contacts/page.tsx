@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Contacts from '@/components/admin/pages/Contacts';
+import Contacts from '@/components/user/pages/Contacts';
 
 
 
@@ -12,9 +12,9 @@ export default function ContactsPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const adminToken = sessionStorage.getItem('adminToken');
+    const userToken = sessionStorage.getItem('userToken');
     
-    if (!adminToken) {
+    if (!userToken) {
       router.push('/login');
     } else {
       setIsLoading(false);
