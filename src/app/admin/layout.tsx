@@ -70,7 +70,7 @@ export default function AdminLayout({
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
 
-  // Don't check auth for login page
+
   const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export default function AdminLayout({
     }
   }, [router, isLoginPage]);
 
-  // For login page, render without sidebar/header
+  
   if (isLoginPage) {
     return <>{children}</>;
   }

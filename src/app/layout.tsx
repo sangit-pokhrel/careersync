@@ -31,6 +31,7 @@ export default function RootLayout({
    
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased primary-bg` }
+        suppressHydrationWarning
       >
         <ToastContainer position="top-center" />
         <ThemeProvider>     

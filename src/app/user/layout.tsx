@@ -1,3 +1,4 @@
+// src/app/user/layout.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -13,7 +14,15 @@ export default function UserLayout({
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
 
+  // Don't check auth for login page
+  const isLoginPage = pathname === '/user/login';
+
   useEffect(() => {
+    if (isLoginPage) {
+      setIsLoading(false);
+      return;
+    }
+
     const userToken = sessionStorage.getItem('userToken');
     
     if (!userToken) {
@@ -21,7 +30,12 @@ export default function UserLayout({
     } else {
       setIsLoading(false);
     }
-  }, [router]);
+  }, [router, isLoginPage]);
+
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
 
   if (isLoading) {
     return (
