@@ -75,7 +75,7 @@ export default function DashboardContent() {
         ticks: {
           stepSize: 10,
           font: {
-            family: 'Gotham',
+            family: '',
           },
         },
         grid: {
@@ -85,7 +85,7 @@ export default function DashboardContent() {
       x: {
         ticks: {
           font: {
-            family: 'Gotham',
+            family: '',
           },
         },
         grid: {

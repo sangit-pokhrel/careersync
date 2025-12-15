@@ -29,7 +29,7 @@ const Footer = () => {
   ];
   return (
     <div>
-      <div className=" grid grid-cols-2 md:grid-cols-4 items-start justify-evenly footer_bg w-full px-10">
+      <div className=" grid grid-cols-2 md:grid-cols-4 items-start justify-evenly footer_bg w-full px-10 pt-10">
         <div>
           <div className="flex flex-col items-start    col-span-2">
             <h1 className="text-white text-xl mb-1 font-semibold">Cv Saathi</h1>
@@ -123,7 +123,7 @@ const Footer = () => {
             </div>
             <div>
               <iframe
-              className="w-[200px] md:w-[300px] h-[100px]"
+              className="w-[180px] md:w-[300px] h-[100px]"
                 style={{ border: 0 }}
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7065.149420288041!2d85.33723278713099!3d27.699536554070825!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb199b0bc829b7%3A0x265edcae115c10c!2sGlobal%20College%20of%20Management!5e0!3m2!1sen!2snp!4v1763912301481!5m2!1sen!2snp"
              

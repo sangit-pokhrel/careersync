@@ -24,22 +24,24 @@ const FeaturedJobsSec=()=>{
     return(
     <Section>
       <div className="flex flex-col gap-y-6">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold">
+        <div className="flex justify-between text-center">
+          <div>
+            <h2 className="text-3xl font-bold">
             Featured Jobs
           </h2>
           <p className="text-xs text-gray-500 mt-1">
-            Our AI-powered platform provides comprehensive analysis to help land
-            your dream job
+            Explore opportunities By Your field
           </p>
-        </div>
-        {/* Desktop view  */}
-         <div className=" hidden md:flex justify-end items-center mr-12 ">
+          </div>
+          <div className=" hidden md:flex justify-end items-center ">
           <Link href={"/Jobs/all"} className=" cta_button flex flex-row justify-center items-center gap-x-6 px-8 py-3 rounded-lg cursor-pointer" > <p className="text-xl font-semibold">View All Jobs</p> <FaArrowRight/></Link>
         </div>
-        <div className="p-4"> 
+        </div>
+        {/* Desktop view  */}
          
-       <div className="hidden md:grid grid-cols-3 place-items-center justify-center  gap-y-8">
+        <div > 
+         
+       <div className="hidden md:grid grid-cols-3 gap-x-10   gap-y-8">
               {/* Display items */}
       {currentItems.map((job) => (
               <JobCard key={job.id} job={job} />

@@ -115,10 +115,10 @@ const BrowseByCategory = ()=>{
             </div>
         </div>
         {/* Slider */}
-        <div className="relative flex items-center justify-center ">
+        <div className="relative flex  ">
           <div
             ref={sliderRef}
-            className="flex gap-4 overflow-x-scroll scroll-smooth snap-x snap-mandatory px-4 py-4 w-full md:w-[95%]"
+            className="flex gap-4 overflow-x-scroll scroll-smooth snap-x snap-mandatory px-4 py-4 w-full"
             style={{ scrollbarWidth: "none" }}
           >
             {CardData.map((data,index) => (

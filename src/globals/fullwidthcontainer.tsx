@@ -1,10 +1,13 @@
 
 import React from "react"
+import Container from "./container"
 import "@/globals/styles/style.color.css"
 const FullWidthContainer= ({children}:{children:React.ReactNode})=>{
   return(
-    <div className="w-screen relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw] fullwidthcontainer_bg ">
-      {children}
+    <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen fullwidthcontainer_bg">
+     
+        {children}
+    
 
 </div>
 

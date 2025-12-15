@@ -7,7 +7,7 @@ import Section from "@/globals/section";
 const HeroSection = () => {
   return (
     <Section>
-          <div className="grid md:grid-cols-2 grid-cols-1 justify-center items-center ">
+          <div className="grid md:grid-cols-2 grid-cols-1 justify-center items-start ">
       {/* left Section */}
       <div className="flex flex-col  items:center md:items-start justify-center gap-y-10">
         <div className="flex flex-col gap-y-2">

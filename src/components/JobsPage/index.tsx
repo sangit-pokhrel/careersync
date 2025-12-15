@@ -10,7 +10,7 @@ import FeaturedJobsSec from "./featuredJobsSec";
 const JobsPage=()=>{
   return (  
    <Container>
-     <div className="flex justify-center items-center mb-10">
+     <div className="flex justify-center items-center mb-3 ">
           <Badge
             icon={<IoBagCheckOutline className="inline mr-1 mb-1 text-blue-500" />}
           >

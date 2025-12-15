@@ -1,7 +1,8 @@
 "use client"
 import React,{useState} from 'react'
+import FullWidthContainer from "@/globals/fullwidthcontainer"
 import { FiTarget} from "react-icons/fi";
-import Section from '@/globals/section';
+import Section from "@/globals/section"
 
 interface CardsDataType{
   icon:React.ReactNode
@@ -45,20 +46,20 @@ const Cards = ({data}:{data:CardsDataType})=>{
   )
 }
 
-const WhyChooseSection =()=>{
-   const [isSeeMore,setIsSeeMore] = useState(false);
-   const handleSeemore =()=>{
-    setIsSeeMore(prev=>!prev);
-   }
-  return(
+const CoreValuesSection = () => {
+  const [isSeeMore,setIsSeeMore] = useState(false);
+     const handleSeemore =()=>{
+      setIsSeeMore(prev=>!prev);
+     }
+    return(
     <Section>
-     
-           <div className="flex flex-col gap-y-8 py-6 w-full">
-              <div className="flex flex-col justify-center items-center gap-y-4" >
-                <h2 className="text-3xl text-white text-center font-bold">Why Choose Cv Saathi ?</h2>
-                <p className=" text-md md:text-xs text-white  text-center">Our AI-powered platform provides comprehensive analysis to help land your dream job</p>
-              </div>
-               {/* Desktop View */}
+       <FullWidthContainer>
+        <div className=' flex flex-col gap-y-12 py-8'>
+       <div className="flex flex-col gap-y-5">
+        <h1 className="font-bold text-4xl text-white text-center">Our Core Values</h1>
+        <p className="font-normal text-center text-white text-xs">We combine advanced AI with real HR expertise to create solutiions that evolve with the mordern hiring landscape</p>
+       </div>
+       {/* Desktop View */}
               <div className=" hidden md:flex justify-evenly gap-x-10 px-10">
                 {
                   CardsData.map((data,index)=>
@@ -69,6 +70,7 @@ const WhyChooseSection =()=>{
                 }
 
               </div>
+              {/* Mobile view */}
                <div className="md:hidden flex flex-col justify-center items-center gap-y-5">
                 {
                   !isSeeMore?CardsData.slice(0,1).map((data,index)=>
@@ -83,10 +85,11 @@ const WhyChooseSection =()=>{
                 }
                   <button className='text-white ' onClick={handleSeemore}>{!isSeeMore?"See More...":"See Less"}</button>
               </div>
-            </div>
+      </div>
+     </FullWidthContainer>
     </Section>
-   
-  )
+    )
 }
 
-export default WhyChooseSection;
+
+export default CoreValuesSection;

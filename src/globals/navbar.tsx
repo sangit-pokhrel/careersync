@@ -26,8 +26,8 @@ const Navabar=()=>{
   }
   return(
     <div>
-      <div className="fixed top-0 left-0 right-0 z-50  py-2 ">
-      <div className="backdrop-blur-sm bg-white/40 w-[80%]  h-1/2 border border-gray-400 flex items-center-safe justify-evenly  p-2 mx-auto rounded-4xl ">
+      <div className="fixed top-0 left-0 right-0 z-50  py-2 max-w-6xl mx-auto  ">
+      <div className="backdrop-blur-sm bg-white/40 max-w-6xl  h-1/2 border border-gray-400 flex items-center-safe justify-evenly  p-2 mx-auto rounded-4xl ">
         <div >
           <p>Logo</p>
         </div>

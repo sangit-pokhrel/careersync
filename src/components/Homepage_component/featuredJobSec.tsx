@@ -70,10 +70,10 @@ const FeaturedJobSlider = () => {
         </div>
 
         {/* Slider */}
-        <div className="relative flex items-center justify-center ">
+        <div className="relative flex w-full  ">
           <div
             ref={sliderRef}
-            className="flex gap-4 overflow-x-scroll scroll-smooth snap-x snap-mandatory px-4 py-4 w-full md:w-[90%]"
+            className="flex gap-4 overflow-x-scroll scroll-smooth snap-x snap-mandatory  py-4  md:w-full"
             style={{ scrollbarWidth: "none" }}
           >
             {jobs.map((job) => (
@@ -85,7 +85,7 @@ const FeaturedJobSlider = () => {
           <button
             onClick={() => slide("prev")}
             disabled={!canScrollPrev}
-            className={`absolute top-1/2 left-15 cta_button text-white p-2 rounded-full z-10 hidden md:flex ${
+            className={`absolute top-1/2 -left-9 cta_button text-white p-2 rounded-full z-10 hidden md:flex ${
               !canScrollPrev ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
             }`}
           >
@@ -94,7 +94,7 @@ const FeaturedJobSlider = () => {
           <button
             onClick={() => slide("next")}
             disabled={!canScrollNext}
-            className={`absolute top-1/2  right-15 cta_button text-white p-2 rounded-full z-10 hidden md:flex ${
+            className={`absolute top-1/2  -right-9 cta_button text-white p-2 rounded-full z-10 hidden md:flex ${
               !canScrollNext ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
             }`}
           >

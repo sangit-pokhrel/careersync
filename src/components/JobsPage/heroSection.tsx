@@ -16,7 +16,7 @@ const HeroSection = ()=>{
                <p className="font-extralight text-sm text-gray-500">Join thousands of professionals who found their dream jobs</p>
              </div>
              <div>
-              <div className="bg-white px-12 py-8 rounded-lg">
+              <div className="bg-white pl-10 pr-24 py-8 rounded-lg">
                 <Form/>
               </div>
              </div>
