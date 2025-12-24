@@ -361,7 +361,7 @@ export default function AdminLoginPage() {
       // Step 4: NOW store everything - user is verified admin
       
       // Store access token in cookie
-      document.cookie = `accessToken=${accessToken}; path=/; max-age=${15 * 60}`; // 15 minutes
+      document.cookie = `accessToken=${accessToken}; path=/; max-age=${40 * 60}`; // increased to 40 minutes 
       
       // Store refresh token if provided
       if (loginResponse.data.refreshToken) {
