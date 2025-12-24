@@ -983,7 +983,7 @@ export default function Users() {
         twoFactorEnabled: editForm.twoFactorEnabled
       };
 
-      await axios.put(`${baseURL}/admin/users/${selectedUser._id}`, 
+      await axios.put(`${baseURL}/users/${selectedUser._id}`, 
         updateData,
         {
           headers: {
