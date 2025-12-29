@@ -5,6 +5,7 @@ import "../globals/styles/style.color.css";
 import ThemeProvider from "@/app/context/ThemeProvider";
 import { ToastContainer } from "react-toastify";
 
+import ReactQueryProvider from "./providers/ReactQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,16 +27,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+ 
   return (
     <html lang="en">
    
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased primary-bg` }
-        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} antialiased primary-bg overflow-x-hidden` }
+        suppressHydrationWarning 
       >
         <ToastContainer position="top-center" />
-        <ThemeProvider>     
+        <ThemeProvider> 
+          <ReactQueryProvider>
            {children}        
+            </ReactQueryProvider>    
         </ThemeProvider>
       </body>
     </html>

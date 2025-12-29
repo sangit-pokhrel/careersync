@@ -13,8 +13,10 @@ export const metadata: Metadata = {
 };
 export default function Home() {
   return (
-    <HomeLayout>
-      <Homepage_component />
-    </HomeLayout>
+    
+     
+       <Homepage_component />
+
+  
   );
 }
