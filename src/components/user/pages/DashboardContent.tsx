@@ -165,6 +165,13 @@ export default function DashboardContent() {
               Get Help
             </button>
             </Link>
+
+            <Link href="/" className="block">
+            <button className="w-full bg-[#FDF7F2] rounded-xl p-4 text-left hover:-translate-y-0.5 hover:border-[#B8B8B8] font-medium border border-[#E5E5E5] transition-shadow flex items-center gap-3">
+              <span className="text-xl"></span>
+              Back To Home
+            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -156,7 +156,7 @@ export default function VerifyOTPPage() {
         }
         
         // Redirect to dashboard or home
-        router.push("/dashboard");
+        router.push("/");
       } else {
         setError(data.error || "Verification failed");
         
