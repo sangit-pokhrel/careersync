@@ -1,19 +1,21 @@
 import { Metadata } from "next";
 import ContactIndex from "@/components/coach/pages/CoachDashboard";
+import ProtectedRoute from "@/globals/protectedRoute";
+import HomeContactPage from "@/components/ContactPage/HomeContactpage";
 export const metadata:Metadata  ={
   title:"Contact page",
   description:"To contact us call 12365478910",
 
 } 
-  const ContactPage = () => {
+  const ContactPageHome = () => {
   return (
-      <ProtectedRoute>
+     
 
-        <ContactIndex/>
-      </ProtectedRoute>
+        <HomeContactPage />
+     
 
    
   )
 }
 
-export default ContactPage;
+export default ContactPageHome;

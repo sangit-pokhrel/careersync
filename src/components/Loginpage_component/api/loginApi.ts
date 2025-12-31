@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { auth } from "@/firebase";
 import { getAuth } from "firebase/auth";
+
 function getCookie(name: string) {
   return document.cookie
     .split("; ")
@@ -15,11 +16,10 @@ const LoginMutationFunc =async (data:any)=>{
       "Content-Type": "application/json",
     },
   });
-  document.cookie = `Token=${res.data.accessToken}`;
+  document.cookie = `accessToken=${res.data.accessToken}`;
 
-  return res.data
+  window.location.href = "/"
 
-  // console.log((await auth.currentUser?.getIdTokenResult(true))?.token);
 }
 
 export const useLoginMutation = () => {
