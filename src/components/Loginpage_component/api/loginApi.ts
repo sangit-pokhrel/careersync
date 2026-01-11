@@ -17,6 +17,8 @@ const LoginMutationFunc =async (data:any)=>{
       
     },
   });
+
+  
   
 document.cookie = `accessToken=${res.data.accessToken}`;
 
