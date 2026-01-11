@@ -130,19 +130,7 @@ export default function LoginPage() {
 
               <div className="my-6 border-t border-gray-300" />
 
-              <div className="flex items-center justify-center gap-4">
-                <button className="flex items-center gap-2 px-6 py-2.5 border border-gray-300 rounded-full bg-white hover:bg-gray-50 text-sm font-medium text-gray-600 whitespace-nowrap">
-                  <FcGoogle className="w-5 h-5" />
-                  Continue With Google
-                </button>
-
-                <span className="text-sm text-gray-400 font-medium">OR</span>
-
-                <button className="flex items-center gap-2 px-6 py-2.5 border border-gray-300 rounded-full bg-white hover:bg-gray-50 text-sm font-medium text-gray-600 whitespace-nowrap">
-                  <FaFacebook className="w-4 h-4 text-blue-600" />
-                  Continue With Facebook
-                </button>
-              </div>
+           
             </div>
 
             {/* RIGHT – IMAGE */}

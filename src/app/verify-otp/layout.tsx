@@ -2,11 +2,11 @@
 import type {Metadata} from "next";
 
 export const metadata: Metadata = {
-  title: "Settings - CV Saathi Admin",
-  description: "View and manage users settings",
+  title: "Verify Your Otp",
+  description: "Verify your OTP",
 };
 
-export default function SettingsLayout({
+export default function OTPLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

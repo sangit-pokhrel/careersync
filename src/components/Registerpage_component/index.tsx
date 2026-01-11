@@ -214,38 +214,9 @@ const RegisterPage = () => {
               </Link>
             </p>
 
-            {/* Divider */}
-            <div className="flex items-center my-5">
-              <div className="flex-1 border-t border-gray-200"></div>
-              <span className="px-4 text-gray-400 text-sm font-medium">OR</span>
-              <div className="flex-1 border-t border-gray-200"></div>
-            </div>
 
             {/* Social Login Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              {/* Google Button */}
-              <button
-                type="button"
-                onClick={signInWithGoogle}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-gray-200 rounded-full hover:bg-gray-50 hover:border-gray-300 transition-all active:scale-[0.98]"
-              >
-                <FcGoogle size={20} />
-                <span className="text-sm font-medium text-gray-700">
-                  Continue With Google
-                </span>
-              </button>
-
-              {/* Facebook Button */}
-              <button
-                type="button"
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-amber-300 rounded-full hover:bg-amber-50 hover:border-amber-400 transition-all active:scale-[0.98]"
-              >
-                <FaFacebook size={20} className="text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">
-                  Continue With Facebook
-                </span>
-              </button>
-            </div>
+         
           </div>
         </div>
       </div>

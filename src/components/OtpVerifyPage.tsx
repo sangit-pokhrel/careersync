@@ -219,12 +219,18 @@ export default function VerifyOTPPage() {
     }
   };
 
-  // Auto-submit when all digits entered
+ // ✅ PLACE IT HERE 👇
   useEffect(() => {
-    if (otp.every((digit) => digit !== "") && !isLoading) {
-      handleVerify();
+    if (!userId || !email) {
+      toast.error("Invalid or expired verification link");
+      router.replace("/register");
     }
-  }, [otp]);
+  }, [userId, email, router]);
+
+ 
+  if (!userId || !email) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-cyan-50 flex items-center justify-center p-4">

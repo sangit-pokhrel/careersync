@@ -1,18 +1,12 @@
-
-
 'use client';
 
 import SearchParamsWrapper from '@/components/Searchparamswrapper';
 import VerifyOTPPage from './../../components/OtpVerifyPage';
 
-export default function UserPage() {
-
-  return 
-  <SearchParamsWrapper>
-
-
-    <VerifyOTPPage />
-  </SearchParamsWrapper>
-  
-  ;
+export default function OTPPage() {
+  return (
+    <SearchParamsWrapper>
+      <VerifyOTPPage />
+    </SearchParamsWrapper>
+  );
 }
