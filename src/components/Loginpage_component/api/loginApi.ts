@@ -11,7 +11,7 @@ function getCookie(name: string) {
 }
  
 const LoginMutationFunc =async (data:any)=>{
-  const res = await axios.post('https://cv-analyser-backend.onrender.com',data, {
+  const res = await axios.post('https://cv-analyser-backend.onrender.com/api/v1/auth/login',data, {
     headers: {
       "Content-Type": "application/json",
       
