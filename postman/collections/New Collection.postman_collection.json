@@ -1,0 +1,88 @@
+{
+  "info": {
+    "_postman_id": "83768753-60a5-4d82-aacd-5be4e2d8baf7",
+    "name": "SG",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "Register",
+          "id": "306f03bf-852b-4cbf-8526-969e0fb1c36b",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\r\n    \"firstName\": \"Sarah\",\r\n    \"lastName\": \"Pokhrel\",\r\n    \"email\": \"user@gmail.com\",\r\n    \"password\": \"user1234\",\r\n    \"phone\" : \"9868618385\"\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "id": "adce1668-37d6-49c7-8e0a-9b6300f753b0",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \r\n    \"email\": \"admin@rideshare.com\",\r\n    \"password\": \"admin123\"\r\n}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "f43fabb4-37a9-4835-b758-99d79609730d"
+    },
+    {
+      "name": "New Folder",
+      "item": [],
+      "id": "d1b59847-4f79-4e2a-90f1-63ca206ee94f"
+    },
+    {
+      "name": "New Request",
+      "id": "fb2f1ed8-8e37-42e6-ab08-9b56a499140e",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -144,7 +144,7 @@
                 }
               ]
             },
-            "method": "GET",
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -153,7 +153,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "",
+              "raw": "{\r\n  \"isEmailVerified\": true,\r\n  \"status\": \"verified\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -375,7 +375,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": ""
+              "raw": "{{baseUrl}}/support/tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "support",
+                "tickets"
+              ]
             }
           },
           "response": []
@@ -1101,6 +1108,229 @@
         }
       ],
       "id": "0e4f65f4-fecd-4723-ad36-7def434b6f5a"
+    },
+    {
+      "name": "3. Job Recommendations",
+      "item": [
+        {
+          "name": "Generate Recommendations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    console.log('✅ Generated', jsonData.data.totalMatches, 'recommendations');",
+                  "    if (jsonData.data.recommendations.length > 0) {",
+                  "        pm.environment.set('recommendationId', jsonData.data.recommendations[0]._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "92cf77c8-1f3d-4ebf-94cf-3ec6e6799039"
+              }
+            }
+          ],
+          "id": "3545458e-c4f4-472a-87c5-4dbc3d8cc910",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recommendations/generate?limit=20&minScore=40",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recommendations",
+                "generate"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Max number of recommendations (default: 20)"
+                },
+                {
+                  "key": "minScore",
+                  "value": "40",
+                  "description": "Minimum match score 0-100 (default: 40)"
+                }
+              ]
+            },
+            "description": "Generate job recommendations based on latest CV analysis and profile skills. Automatically triggered after CV analysis completes."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Recommendations",
+          "id": "2cf3bc2b-8431-49f6-a68e-44c1606e86df",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recommendations?status=recommended&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recommendations"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "recommended",
+                  "description": "Filter by status: recommended, viewed, applied, dismissed"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of results"
+                }
+              ]
+            },
+            "description": "Get user's job recommendations with full job details"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recommendation Details",
+          "id": "acedab22-161f-46d3-b99c-1e887c758e42",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recommendations/{{recommendationId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recommendations",
+                "{{recommendationId}}"
+              ]
+            },
+            "description": "Get single recommendation with match score and criteria"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark as Viewed",
+          "id": "5bf13c13-32a5-4bf3-857a-78be5ec33d02",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recommendations/{{recommendationId}}/view",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recommendations",
+                "{{recommendationId}}",
+                "view"
+              ]
+            },
+            "description": "Mark recommendation as viewed (status: recommended → viewed)"
+          },
+          "response": []
+        },
+        {
+          "name": "Dismiss Recommendation",
+          "id": "7680202e-8f9b-43ed-9256-2903875a273f",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recommendations/{{recommendationId}}/dismiss",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recommendations",
+                "{{recommendationId}}",
+                "dismiss"
+              ]
+            },
+            "description": "Dismiss a recommendation (removes from active list)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recommendation Stats",
+          "id": "4db6ce32-c307-4845-8412-530f13c507a3",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recommendations/stats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recommendations",
+                "stats"
+              ]
+            },
+            "description": "Get statistics: total recommendations, by status, average scores"
+          },
+          "response": []
+        },
+        {
+          "name": "Clear All Recommendations",
+          "id": "156296a1-b021-45d1-b3b2-a123f8810676",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recommendations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "recommendations"
+              ]
+            },
+            "description": "Delete all recommendations for current user"
+          },
+          "response": []
+        }
+      ],
+      "id": "581cc277-d199-43c9-b4cf-5882156f02c9"
     },
     {
       "name": "Applications",
@@ -2117,6 +2347,16 @@
           "name": "Get Statistics (Global)",
           "id": "aa73b466-405f-4f71-89fd-16dcaa8a452c",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [
               {
@@ -2769,6 +3009,1800 @@
       ],
       "id": "99faacd3-b504-497d-8ccc-6fdcd1261fd8",
       "description": "Agent profiles, ratings, reviews, and leaderboard"
+    },
+    {
+      "name": "🔐 AUTHENTICATION",
+      "item": [
+        {
+          "name": "Login as Coach",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('coachToken', jsonData.accessToken);",
+                  "    pm.environment.set('authToken', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "eaa86f03-bd29-494f-920a-153034f19f3d"
+              }
+            }
+          ],
+          "id": "545ae2bb-64f7-46d5-9d30-1e4b21e8b2c3",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"coach@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login as Recruiter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('recruiterToken', jsonData.accessToken);",
+                  "    pm.environment.set('authToken', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "9a6b8993-c1a8-4431-9a4b-6609649b475b"
+              }
+            }
+          ],
+          "id": "855c48b4-f51b-4592-bf08-7fbbaefd6869",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"recruiter@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login as Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('studentToken', jsonData.accessToken);",
+                  "    pm.environment.set('authToken', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "f113f6cd-eec9-4692-87c7-3a2867b4afd6"
+              }
+            }
+          ],
+          "id": "a220c57d-7ffa-4667-9a91-02d8bd5995a7",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "8d525b15-2485-4c8b-b956-497fe82b8016"
+    },
+    {
+      "name": "👨‍🏫 CAREER COACH (18 endpoints)",
+      "item": [
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get Dashboard Stats",
+              "id": "17bc5c6c-aaab-4c75-bf99-04db0789fe18",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/coach/dashboard",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "dashboard"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "6e8c1833-9b94-4bb9-ad8e-21d7a860bf53"
+        },
+        {
+          "name": "Students",
+          "item": [
+            {
+              "name": "Get Assigned Students",
+              "id": "92a27edc-98a8-4747-9006-8291d77d663d",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/coach/students?page=1&limit=20",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "students"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Student Details",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// Set studentId variable before running"
+                    ],
+                    "type": "text/javascript",
+                    "id": "d59ad10e-c8e4-42df-9d7a-f9c183be1c29"
+                  }
+                }
+              ],
+              "id": "25c0f72d-6969-484a-ab8e-a11e9b1a2be9",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/coach/students/{{studentId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "students",
+                    "{{studentId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "71c88ac5-8766-4a15-acb3-d86b974371f7"
+        },
+        {
+          "name": "Interview Requests",
+          "item": [
+            {
+              "name": "Create Interview Assessment",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "44441f6e-7ad8-4173-963a-9a2560f8a01e",
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.environment.set('interviewId', jsonData.data._id);",
+                      "    pm.environment.set('accessToken', jsonData.data.accessToken);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "846a4f50-38d1-44e4-9ad3-3ab57985a8e6",
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "id": "15b196a0-c026-4e00-8d78-1ef1b36c211e",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"studentId\": \"{{studentId}}\",\n  \"title\": \"Frontend Developer Assessment\",\n  \"description\": \"Test your React and JavaScript skills\",\n  \"assessmentType\": \"both\",\n  \"timeLimit\": 45,\n  \"expiryDays\": 7,\n  \"questions\": [\n    {\n      \"type\": \"mcq\",\n      \"question\": \"What is React?\",\n      \"options\": [\"A library\", \"A framework\", \"A language\", \"A database\"],\n      \"correctAnswer\": \"A\",\n      \"points\": 1\n    },\n    {\n      \"type\": \"written\",\n      \"question\": \"Explain the virtual DOM\",\n      \"expectedLength\": 200,\n      \"points\": 2\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/coach/interviews/create",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "interviews",
+                    "create"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Interview Requests",
+              "id": "2e4031a5-c0a8-4b0f-a986-9fde518aa33d",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/coach/interviews?status=pending",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "interviews"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "pending"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "cf20a047-fc82-4b55-a95e-d5686a39748e"
+        },
+        {
+          "name": "Submissions",
+          "item": [
+            {
+              "name": "Get Submissions to Review",
+              "id": "e72b4b24-6d32-4cbc-9a35-04dbe47c39cd",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/coach/submissions?reviewStatus=pending",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "submissions"
+                  ],
+                  "query": [
+                    {
+                      "key": "reviewStatus",
+                      "value": "pending"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Submission Details",
+              "id": "a3a8d02c-952e-4765-9885-ae8d00fbdf82",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/coach/submissions/{{submissionId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "submissions",
+                    "{{submissionId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Review Submission (Approve)",
+              "id": "716bbf99-2ed8-46a4-a79a-bb3675223d38",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"decision\": \"approved\",\n  \"feedback\": \"Great job! Your answers show strong understanding.\",\n  \"writtenScores\": [\n    {\n      \"answerId\": \"answer_id_here\",\n      \"points\": 2,\n      \"notes\": \"Excellent explanation\"\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/coach/submissions/{{submissionId}}/review",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "submissions",
+                    "{{submissionId}}",
+                    "review"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Review Submission (Reject)",
+              "id": "6d17adb7-a8e3-434e-a484-b7700b287b3f",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"decision\": \"rejected\",\n  \"feedback\": \"Please review the concepts and try again.\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/coach/submissions/{{submissionId}}/review",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "submissions",
+                    "{{submissionId}}",
+                    "review"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "b35e0c99-5d6d-4cc3-8a01-3c00302ddc2a"
+        },
+        {
+          "name": "Video Interviews",
+          "item": [
+            {
+              "name": "Schedule Video Interview",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.environment.set('videoInterviewId', jsonData.data._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "id": "75a6ffd1-7a15-4b7b-a76d-795e642a251e"
+                  }
+                }
+              ],
+              "id": "e7a0da78-da19-45ea-b842-1033156bfcab",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"submissionId\": \"{{submissionId}}\",\n  \"scheduledDate\": \"2025-12-30\",\n  \"scheduledTime\": \"14:00\",\n  \"duration\": 30,\n  \"notesForStudent\": \"Please be ready 5 minutes early\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/coach/video-interviews/schedule",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "video-interviews",
+                    "schedule"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Scheduled Interviews",
+              "id": "42b5c458-dc3c-4cf7-a142-be9c0111a18e",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/coach/video-interviews?status=scheduled",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "video-interviews"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "scheduled"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Video Interview",
+              "id": "3b165393-498a-488c-b7de-8a83e4a2c313",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"scheduledDate\": \"2025-12-31\",\n  \"scheduledTime\": \"15:00\",\n  \"notesForStudent\": \"Updated time\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/coach/video-interviews/{{videoInterviewId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "video-interviews",
+                    "{{videoInterviewId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Cancel Video Interview",
+              "id": "a4febaa7-30d1-4a73-aff8-7c95d3f74d69",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Rescheduling needed\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/coach/video-interviews/{{videoInterviewId}}/cancel",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "video-interviews",
+                    "{{videoInterviewId}}",
+                    "cancel"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "d43629ac-4893-4a1d-98f7-aba984ff332b"
+        },
+        {
+          "name": "Assignments",
+          "item": [
+            {
+              "name": "Get Eligible Students",
+              "id": "669f2b1d-0bae-441d-9c2c-75ead77e992b",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/coach/assignments/eligible-students",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "assignments",
+                    "eligible-students"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Assignment",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.environment.set('assignmentId', jsonData.data._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "id": "c755f548-4eab-4e55-9696-ec52357e63d2"
+                  }
+                }
+              ],
+              "id": "5db0183d-88b0-4135-9eb8-ba2539fe2aa7",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Build a Todo App\",\n  \"description\": \"Create a React todo application with CRUD operations\",\n  \"type\": \"project\",\n  \"difficulty\": \"medium\",\n  \"dueDate\": \"2026-01-15\",\n  \"points\": 10,\n  \"studentIds\": [\"{{studentId}}\"],\n  \"allowLateSubmission\": false,\n  \"requiresFile\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/coach/assignments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "assignments"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Assignments",
+              "id": "c8d74751-baff-476f-b846-14947a57a996",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/coach/assignments?status=published",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "assignments"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "published"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Review Assignment Submission",
+              "id": "3c09ecf4-66b4-4b7a-bb45-a111cf24eb19",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{coachToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grade\": 9,\n  \"feedback\": \"Excellent work! Clean code and good UI.\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/coach/assignments/{{assignmentId}}/review/{{studentId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "coach",
+                    "assignments",
+                    "{{assignmentId}}",
+                    "review",
+                    "{{studentId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "142aa4ff-b79f-4aff-a42f-38b96abc35a9"
+        }
+      ],
+      "id": "b44e6a38-bd46-408a-8115-54030d5516c6"
+    },
+    {
+      "name": "🏢 RECRUITER (12 endpoints)",
+      "item": [
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get Dashboard Stats",
+              "id": "e33de8d4-4af7-4e85-9273-fae0c25be27e",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/recruiter/dashboard",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "dashboard"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "11386ed8-9bd1-40a9-9d0e-49591565d165"
+        },
+        {
+          "name": "Jobs",
+          "item": [
+            {
+              "name": "Create Job",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.environment.set('jobId', jsonData.data._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "id": "52d584ef-9251-4aba-8bfe-fe143df429eb"
+                  }
+                }
+              ],
+              "id": "504f8c58-51fe-4c61-b4f0-9ea8d82515fe",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"companyName\": \"Tech Corp\",\n  \"title\": \"Senior React Developer\",\n  \"description\": \"We are looking for an experienced React developer...\",\n  \"requiredSkills\": [\"React\", \"TypeScript\", \"Node.js\"],\n  \"experienceLevel\": \"senior\",\n  \"minExperience\": 5,\n  \"maxExperience\": 10,\n  \"education\": \"bachelors\",\n  \"jobType\": \"full-time\",\n  \"workMode\": \"remote\",\n  \"location\": \"Kathmandu, Nepal\",\n  \"salaryMin\": 80000,\n  \"salaryMax\": 120000,\n  \"salaryCurrency\": \"NPR\",\n  \"deadline\": \"2026-01-31\",\n  \"maxApplicants\": 50,\n  \"isPublic\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/recruiter/jobs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "jobs"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Jobs",
+              "id": "147fa7ea-83aa-4679-b00a-a5c2b1110f78",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/recruiter/jobs?status=active",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "jobs"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "active"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Job Details",
+              "id": "4615842f-62cf-4ce9-b17a-25e535d682c3",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/recruiter/jobs/{{jobId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "jobs",
+                    "{{jobId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Job",
+              "id": "97998799-c3bb-4399-9e20-7a3c29d010b8",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Lead React Developer\",\n  \"salaryMax\": 150000\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/recruiter/jobs/{{jobId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "jobs",
+                    "{{jobId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Close Job",
+              "id": "2ef20bf0-6a0c-4d98-a117-d14b61f95900",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/recruiter/jobs/{{jobId}}/close",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "jobs",
+                    "{{jobId}}",
+                    "close"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Job",
+              "id": "6ec828cf-438c-4f31-8a1d-0f98a843774c",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/recruiter/jobs/{{jobId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "jobs",
+                    "{{jobId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "24da7714-4bd0-4db3-b839-c91d31a39f13"
+        },
+        {
+          "name": "Applications",
+          "item": [
+            {
+              "name": "Get Job Applications",
+              "id": "453a4309-4464-45cf-b340-490256af4e68",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/recruiter/jobs/{{jobId}}/applications",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "jobs",
+                    "{{jobId}}",
+                    "applications"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Applications",
+              "id": "69dc9b30-e835-4f35-8310-eda9cf883957",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/recruiter/applications?status=pending",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "applications"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "pending"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Application Details",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// Set applicationId from previous response"
+                    ],
+                    "type": "text/javascript",
+                    "id": "5b1ac6a2-137f-4900-aeca-5c8fbb96ca69"
+                  }
+                }
+              ],
+              "id": "45ef784d-8590-4ce7-924e-91b648793980",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/recruiter/applications/{{applicationId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "applications",
+                    "{{applicationId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Application Status - Interview",
+              "id": "ba8ba9cc-69ac-4a22-80fc-251b8c8ed2d5",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"interview\",\n  \"interviewDate\": \"2025-12-30\",\n  \"interviewTime\": \"14:00\",\n  \"notes\": \"Strong candidate\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/recruiter/applications/{{applicationId}}/status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "applications",
+                    "{{applicationId}}",
+                    "status"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Application Status - Offer",
+              "id": "978dff93-0afc-4e71-9788-baa590bc0778",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"offered\",\n  \"notes\": \"Excellent performance\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/recruiter/applications/{{applicationId}}/status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "applications",
+                    "{{applicationId}}",
+                    "status"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Bulk Update Applications",
+              "id": "43a6808c-87dd-48e6-ad96-51c346450b08",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{recruiterToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"applicationIds\": [\"id1\", \"id2\", \"id3\"],\n  \"status\": \"rejected\",\n  \"notes\": \"Not a fit at this time\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/recruiter/applications/bulk-update",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "recruiter",
+                    "applications",
+                    "bulk-update"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "76a96210-dcfa-4baf-a8ea-94dba1320843"
+        }
+      ],
+      "id": "15f0c688-2dae-4bc0-9a35-53e2dbd4acea"
+    },
+    {
+      "name": "👨‍🎓 STUDENT/USER (13 endpoints)",
+      "item": [
+        {
+          "name": "Interviews",
+          "item": [
+            {
+              "name": "Get Pending Interviews",
+              "id": "d6265c0d-e1ca-437d-a6ff-5ba64289c309",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/interviews/pending",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "interviews",
+                    "pending"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Access Interview (One-Time Link)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "// accessToken should be set from coach's create interview response"
+                    ],
+                    "type": "text/javascript",
+                    "id": "4b38cbce-2223-44a9-bd97-66f8ebf08091"
+                  }
+                }
+              ],
+              "id": "a4ab7e8c-d85b-4cde-be22-2815f567bd64",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/interviews/{{accessToken}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "interviews",
+                    "{{accessToken}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Submit Interview",
+              "id": "966d1b64-be9b-4e13-a215-ab0acb104966",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"answers\": [\n    {\n      \"questionId\": \"question_id_1\",\n      \"questionType\": \"mcq\",\n      \"answer\": \"A\"\n    },\n    {\n      \"questionId\": \"question_id_2\",\n      \"questionType\": \"written\",\n      \"answer\": \"Virtual DOM is a programming concept...\"\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/user/interviews/{{interviewId}}/submit",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "interviews",
+                    "{{interviewId}}",
+                    "submit"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Submissions",
+              "id": "e4e8b14e-b73a-4052-925c-3d896d3e679d",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/interviews/submissions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "interviews",
+                    "submissions"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Submission Result",
+              "id": "fd554d30-8348-4aa7-a01b-0d973a104315",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/interviews/submissions/{{submissionId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "interviews",
+                    "submissions",
+                    "{{submissionId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "5cf3b65d-5f7d-401e-aacf-60886744e8c4"
+        },
+        {
+          "name": "Video Interviews",
+          "item": [
+            {
+              "name": "Get Scheduled Interviews",
+              "id": "46440c79-5d74-45e1-9434-aff2b4499526",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/interviews/scheduled",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "interviews",
+                    "scheduled"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Video Interview Details",
+              "id": "6c334e94-d7e3-43ef-a705-d1d267f72e52",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/interviews/video/{{videoInterviewId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "interviews",
+                    "video",
+                    "{{videoInterviewId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Join Video Interview",
+              "id": "ae0f5436-a0de-479e-a9e6-de53b0847043",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/interviews/video/{{videoInterviewId}}/join",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "interviews",
+                    "video",
+                    "{{videoInterviewId}}",
+                    "join"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Submit Interview Feedback",
+              "id": "f49c6933-6f89-411c-b685-871fffdbb04d",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"feedback\": \"Great experience, very helpful session\",\n  \"rating\": 5\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/user/interviews/video/{{videoInterviewId}}/feedback",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "interviews",
+                    "video",
+                    "{{videoInterviewId}}",
+                    "feedback"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "728e8b67-3cbf-44d5-bfa6-af0ad1b41e6c"
+        },
+        {
+          "name": "Assignments",
+          "item": [
+            {
+              "name": "Get My Assignments",
+              "id": "d1410dc5-5be0-4770-ade4-498cb193b7fe",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/assignments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "assignments"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Assignment Details",
+              "id": "21bc83b1-c14b-41fa-99ea-b4c90631a5e3",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/user/assignments/{{assignmentId}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "assignments",
+                    "{{assignmentId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Submit Assignment",
+              "id": "076e134c-a735-40f8-94af-d10dec79e208",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{studentToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"submissionText\": \"I have completed the todo app. GitHub link: https://github.com/...\",\n  \"submissionFiles\": [\n    {\n      \"filename\": \"screenshot.png\",\n      \"url\": \"https://...\",\n      \"uploadedAt\": \"2025-12-25T10:00:00Z\"\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/user/assignments/{{assignmentId}}/submit",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "user",
+                    "assignments",
+                    "{{assignmentId}}",
+                    "submit"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "id": "f5654a6f-d4ab-43ae-861f-c2162722b78b"
+        }
+      ],
+      "id": "24ad90a1-213c-45d1-a71d-9590c95db1b5"
     }
   ],
   "event": [

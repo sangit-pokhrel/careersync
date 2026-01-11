@@ -1,0 +1,400 @@
+{
+  "info": {
+    "_postman_id": "9020fb6f-ce4e-4fd0-85cc-c36a3a813709",
+    "name": "Job Recommendations API",
+    "description": "Complete API collection for the ML-based job recommendation system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('accessToken', jsonData.accessToken);",
+                  "    pm.environment.set('userId', jsonData.user._id);",
+                  "    console.log('✅ Token saved:', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "02bbb926-7050-4825-9caa-de89995f42d5"
+              }
+            }
+          ],
+          "id": "266a9da7-3344-43e8-b3a1-ace31ea3b30c",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login and get access token (automatically saved to environment)"
+          },
+          "response": []
+        }
+      ],
+      "id": "dc540f6d-3daf-418c-9d74-c71cc8387675"
+    },
+    {
+      "name": "2. CV Analysis",
+      "item": [
+        {
+          "name": "Upload & Analyze CV",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 202 || pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('analysisId', jsonData.analysisId);",
+                  "    console.log('✅ Analysis ID:', jsonData.analysisId);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "d8b38ce4-3e57-4148-81ff-5efbd5dbbd76"
+              }
+            }
+          ],
+          "id": "2f19a883-d542-4452-b3aa-9eaf402b6c71",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "cv",
+                  "type": "file",
+                  "src": [
+                    "/path/to/your/cv.pdf"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/cv/analyze",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cv",
+                "analyze"
+              ]
+            },
+            "description": "Upload CV for AI analysis. Returns analysis ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Analysis Status",
+          "id": "f042a0a4-6c63-4610-a401-fa4916bd042e",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cv/analyses/{{analysisId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cv",
+                "analyses",
+                "{{analysisId}}"
+              ]
+            },
+            "description": "Check status of CV analysis (queued, processing, done, failed)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Latest Analysis",
+          "id": "6f105648-c12f-4d29-aee8-2040ae13ce37",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cv/analyses/latest",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cv",
+                "analyses",
+                "latest"
+              ]
+            },
+            "description": "Get user's latest completed CV analysis"
+          },
+          "response": []
+        },
+        {
+          "name": "List All My Analyses",
+          "id": "413a8a0e-74d3-4643-9777-ebb5d76765ae",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cv/analyses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cv",
+                "analyses"
+              ]
+            },
+            "description": "List all CV analyses for current user"
+          },
+          "response": []
+        }
+      ],
+      "id": "fd581169-db8a-4f48-a156-79e6f81ac2d3"
+    },
+    {
+      "name": "4. Jobs",
+      "item": [
+        {
+          "name": "List All Jobs",
+          "id": "1687b553-693d-46e6-90ae-ba07fbfea25c",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jobs?page=1&limit=20&status=active",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "active"
+                }
+              ]
+            },
+            "description": "List all active jobs (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job Details",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('jobId', jsonData.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "3feeef2c-85da-4a90-8998-d2b6f7dab3ab"
+              }
+            }
+          ],
+          "id": "dbb41207-cf94-403d-8261-a97e93e1209e",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jobs/{{jobId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{jobId}}"
+              ]
+            },
+            "description": "Get detailed job information"
+          },
+          "response": []
+        }
+      ],
+      "id": "5b72265f-8d3b-4866-b811-f2ca2102f1ed"
+    },
+    {
+      "name": "5. User Profile",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "id": "23fe59af-d1c8-4daf-9260-581bf66eab69",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Get current user profile with skills"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Skills",
+          "id": "19b99391-0b24-4fdf-a2cc-3f26c442f814",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skills\": [\"JavaScript\", \"React\", \"Node.js\", \"MongoDB\", \"Python\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Update user skills (will affect job recommendations)"
+          },
+          "response": []
+        }
+      ],
+      "id": "6a1eac16-65f2-4f0b-b838-5103e6d6c3b5"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "console.log('🚀 Request to:', pm.request.url.toString());"
+        ],
+        "id": "929b9109-9ab7-4fda-8f7f-c1aa76fb62a2"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (pm.response.code >= 200 && pm.response.code < 300) {",
+          "    console.log('✅ Success:', pm.response.code);",
+          "} else {",
+          "    console.log('❌ Error:', pm.response.code, pm.response.json());",
+          "}"
+        ],
+        "id": "d7f0ffbd-bf31-4d94-94ea-f199ab08e0d2"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "ccb95d12-9648-4672-95f1-043e0cce5ee3",
+      "key": "base_url",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "id": "0402a21c-b737-4da6-99d0-e4584ce24a35",
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "98e026e3-096d-4e99-811c-be953b80907c",
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "b1ed3e64-67fe-4bda-a630-d8d4a2a987ef",
+      "key": "analysisId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "bdd61690-c00c-43ea-8183-067e8c7a2b05",
+      "key": "recommendationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "b1c77cee-08e7-4500-8785-f8427ee74648",
+      "key": "jobId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

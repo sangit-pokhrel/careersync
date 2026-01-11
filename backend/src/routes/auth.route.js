@@ -1,25 +1,47 @@
+// // const express = require('express');
+// // const { body } = require('express-validator');
+// // const router = express.Router();
+// // const authController = require('../controllers/authController');
+
+// // // POST /auth/register
+// // router.post('/register', [
+// //   body('email').isEmail().withMessage('valid email required'),
+// //   body('password').isLength({ min: 8 }).withMessage('password must be at least 8 chars'),
+// //   body('firstName').optional().isString(),
+// //   body('lastName').optional().isString(),
+// //   body('role').optional().isIn(['job_seeker', 'employer', 'admin'])
+// // ], authController.register);
+
+
+// // // POST /auth/login
+// // router.post('/login', [
+// //   body('email').isEmail().withMessage('valid email required'),
+// //   body('password').exists().withMessage('password required')
+// // ], authController.login);
+
+// // module.exports = router;
+
 // const express = require('express');
-// const { body } = require('express-validator');
 // const router = express.Router();
-// const authController = require('../controllers/authController');
+// const authController = require('../controllers/auth.controller');
+// const { createAccountLimiter, authLimiter } = require('../middlewares/rateLimitor.middleware');
+// const { requireAuth } = require('../middlewares/auth.middleware');
 
-// // POST /auth/register
-// router.post('/register', [
-//   body('email').isEmail().withMessage('valid email required'),
-//   body('password').isLength({ min: 8 }).withMessage('password must be at least 8 chars'),
-//   body('firstName').optional().isString(),
-//   body('lastName').optional().isString(),
-//   body('role').optional().isIn(['job_seeker', 'employer', 'admin'])
-// ], authController.register);
+// router.post('/register', createAccountLimiter, authController.register);
 
+// router.get('/verify-email', authController.verifyEmail);
 
-// // POST /auth/login
-// router.post('/login', [
-//   body('email').isEmail().withMessage('valid email required'),
-//   body('password').exists().withMessage('password required')
-// ], authController.login);
+// router.post('/login', authLimiter, authController.login);
+
+// router.post('/refresh', authController.refreshTokenHandler);
+
+// router.post('/logout', authController.logout);
+
+// router.post('/revoke-all', requireAuth, authController.revokeAll);
 
 // module.exports = router;
+
+
 
 const express = require('express');
 const router = express.Router();
@@ -27,16 +49,29 @@ const authController = require('../controllers/auth.controller');
 const { createAccountLimiter, authLimiter } = require('../middlewares/rateLimitor.middleware');
 const { requireAuth } = require('../middlewares/auth.middleware');
 
+// ==================== PUBLIC ROUTES ====================
+
+// POST /auth/register - Register new user (sends OTP to email)
 router.post('/register', createAccountLimiter, authController.register);
 
-router.get('/verify-email', authController.verifyEmail);
+// POST /auth/verify-otp - Verify email with OTP
+router.post('/verify-otp', authLimiter, authController.verifyOTP);
 
+// POST /auth/resend-otp - Resend OTP (rate limited)
+router.post('/resend-otp', authLimiter, authController.resendOTP);
+
+// POST /auth/login - Login (requires verified email)
 router.post('/login', authLimiter, authController.login);
 
+// POST /auth/refresh - Refresh access token
 router.post('/refresh', authController.refreshTokenHandler);
 
+// POST /auth/logout - Logout
 router.post('/logout', authController.logout);
 
+// ==================== PROTECTED ROUTES ====================
+
+// POST /auth/revoke-all - Revoke all refresh tokens (logout from all devices)
 router.post('/revoke-all', requireAuth, authController.revokeAll);
 
 module.exports = router;

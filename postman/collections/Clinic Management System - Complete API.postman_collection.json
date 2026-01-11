@@ -1,0 +1,4044 @@
+{
+  "info": {
+    "_postman_id": "f6728136-7f3a-4709-b64e-1c35b77e630c",
+    "name": "Clinic Management System - Complete API",
+    "description": "Complete API collection for Smart Lite Healthcare Management System with all 14 sections organized by functionality",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Section 1: Prescriptions",
+      "item": [
+        {
+          "name": "Create Prescription",
+          "id": "4870c211-dad2-4559-825d-cfcb303e95ab",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient\": \"patient_id_here\",\n  \"doctor\": \"doctor_id_here\",\n  \"appointment\": \"appointment_id_here\",\n  \"diagnosis\": \"Common Cold\",\n  \"medications\": [\n    {\n      \"name\": \"Paracetamol\",\n      \"dosage\": \"500mg\",\n      \"frequency\": \"Twice daily\",\n      \"duration\": \"5 days\",\n      \"instructions\": \"Take after meals\"\n    },\n    {\n      \"name\": \"Vitamin C\",\n      \"dosage\": \"1000mg\",\n      \"frequency\": \"Once daily\",\n      \"duration\": \"7 days\",\n      \"instructions\": \"Take with water\"\n    }\n  ],\n  \"notes\": \"Patient should rest and drink plenty of fluids\",\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/prescriptions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prescriptions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Prescriptions",
+          "id": "9f9651e9-d531-4f19-bd5f-d7d4b66db3fb",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/prescriptions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prescriptions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Prescriptions with Filters",
+          "id": "843d71df-8168-4e81-a1f2-e8560dc5c487",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/prescriptions?status=active&doctorId=doctor_id_here&startDate=2024-01-01&endDate=2024-12-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prescriptions"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "active"
+                },
+                {
+                  "key": "doctorId",
+                  "value": "doctor_id_here"
+                },
+                {
+                  "key": "patientId",
+                  "value": "patient_id_here",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Prescription Statistics",
+          "id": "4f7a9aa7-7d58-4a9c-af50-8583693dbd38",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/prescriptions/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prescriptions",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Prescriptions",
+          "id": "7be2c0c8-a2f9-48ee-8ace-8c5dde89d121",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/prescriptions/patient/:patientId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prescriptions",
+                "patient",
+                ":patientId"
+              ],
+              "variable": [
+                {
+                  "key": "patientId",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor Prescriptions",
+          "id": "519de8f6-fa2d-4141-9d0d-0d3d8da4ff19",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/prescriptions/doctor/:doctorId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prescriptions",
+                "doctor",
+                ":doctorId"
+              ],
+              "variable": [
+                {
+                  "key": "doctorId",
+                  "value": "doctor_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Prescription by ID",
+          "id": "3178fe73-dc5d-43f1-bfbf-5a0036fa149d",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/prescriptions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prescriptions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "prescription_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Prescription",
+          "id": "e10ad205-97f7-477f-b67b-e25dae11e7ac",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"notes\": \"Updated notes: Patient recovered well\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/prescriptions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prescriptions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "prescription_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Prescription",
+          "id": "b3a49c6a-db28-4889-81da-49d8921e06a5",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/prescriptions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "prescriptions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "prescription_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "08c04796-0c7c-423c-b420-1d83da5eaa08"
+    },
+    {
+      "name": "Section 2: Payments",
+      "item": [
+        {
+          "name": "Create Payment",
+          "id": "c70edc4f-555b-4d45-8035-e0ad21a7dc77",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient\": \"patient_id_here\",\n  \"appointment\": \"appointment_id_here\",\n  \"amount\": 500,\n  \"paymentMethod\": \"cash\",\n  \"paymentType\": \"consultation\",\n  \"status\": \"completed\",\n  \"description\": \"Payment for general consultation\",\n  \"notes\": \"Patient paid in full\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Payments",
+          "id": "f425ad49-a956-44c2-a071-0d9f17cae2f7",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Payments with Filters",
+          "id": "9002eb96-ca5a-4d7a-beed-b386558c8a76",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments?status=completed&paymentType=consultation&paymentMethod=cash&startDate=2024-01-01&endDate=2024-12-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "completed"
+                },
+                {
+                  "key": "paymentType",
+                  "value": "consultation"
+                },
+                {
+                  "key": "paymentMethod",
+                  "value": "cash"
+                },
+                {
+                  "key": "patientId",
+                  "value": "patient_id_here",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Statistics",
+          "id": "0de1ad8f-f04d-4904-8d20-f30cfac8de8f",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Today's Payments",
+          "id": "a7a20792-74ae-4b58-877b-6be0ba9b29a8",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/today",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "today"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Payments",
+          "id": "d4ccc73e-b142-4874-8d8d-04196c821108",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/patient/:patientId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "patient",
+                ":patientId"
+              ],
+              "variable": [
+                {
+                  "key": "patientId",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment by ID",
+          "id": "edba9178-d7bc-4a12-bdcf-5c92d423cba8",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "payment_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Payment",
+          "id": "1bd63f8a-3510-471e-92f6-04a557bc98a5",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"notes\": \"Payment verified and confirmed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "payment_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refund Payment",
+          "id": "899d0341-0309-48a0-98f4-37e1ea1ce6c3",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refundAmount\": 500,\n  \"refundReason\": \"Appointment cancelled by patient\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/:id/refund",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                ":id",
+                "refund"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "payment_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Payment",
+          "id": "06f2f094-608f-49d9-8d3b-afb1bdb628fe",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "payment_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "4093015a-dcac-40e2-9c14-43bfaf1ee064"
+    },
+    {
+      "name": "Section 3: Inventory",
+      "item": [
+        {
+          "name": "Create Inventory Item",
+          "id": "c66e91f9-356a-42ad-be4f-cc7d4b41429b",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemName\": \"Paracetamol 500mg\",\n  \"category\": \"medicine\",\n  \"quantity\": 500,\n  \"unit\": \"tablets\",\n  \"minStockLevel\": 100,\n  \"maxStockLevel\": 1000,\n  \"unitPrice\": 0.5,\n  \"supplier\": {\n    \"name\": \"MediSupply Corp\",\n    \"contact\": \"+1234567890\",\n    \"email\": \"sales@medisupply.com\"\n  },\n  \"expiryDate\": \"2025-12-31\",\n  \"batchNumber\": \"BATCH-2024-001\",\n  \"location\": \"Main Store\",\n  \"description\": \"Pain relief medication\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Inventory Items",
+          "id": "8a9513b1-f6eb-4234-9cd3-ada8c1f8df4f",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory with Filters",
+          "id": "7b0d736b-6e63-43d3-aa95-43412bd36fb1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory?category=medicine&status=in_stock&search=Paracetamol",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "medicine"
+                },
+                {
+                  "key": "status",
+                  "value": "in_stock"
+                },
+                {
+                  "key": "search",
+                  "value": "Paracetamol"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory Statistics",
+          "id": "5ba2d2fc-1509-400d-b6f2-7b9dcc8a3aec",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Low Stock Items",
+          "id": "56b44aa2-554f-4673-a7c8-7948bc52eee5",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/low-stock",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "low-stock"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Expired Items",
+          "id": "29c509ee-b118-4e95-b2c0-d154142f8f34",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/expired",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "expired"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory Item by ID",
+          "id": "9de06f67-f7d1-4df5-8f25-459821bdb334",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "inventory_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Inventory Item",
+          "id": "ee706be1-b45a-45f1-b1ce-6e83e9aafef6",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 450,\n  \"notes\": \"Stock updated after monthly audit\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "inventory_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restock Item",
+          "id": "d7844ab4-4e24-4e4c-afb7-769495929c0c",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 200\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/:id/restock",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                ":id",
+                "restock"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "inventory_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Record Stock Usage",
+          "id": "0037a323-6bdc-4e37-adb2-9f1bdf79d638",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 10,\n  \"purpose\": \"Prescribed to patient for fever treatment\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/:id/usage",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                ":id",
+                "usage"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "inventory_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Inventory Item",
+          "id": "574de10b-0ca0-4417-9e2c-122b1db8c404",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "inventory_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "427c361c-a723-4880-a76c-a589a7f12567"
+    },
+    {
+      "name": "Section 4: Notifications",
+      "item": [
+        {
+          "name": "Create Notification (Admin)",
+          "id": "2cf0d19a-2313-45cc-8a1d-c5226365280f",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": \"user_id_here\",\n  \"title\": \"System Maintenance\",\n  \"message\": \"The system will undergo maintenance on Sunday from 2 AM to 4 AM\",\n  \"type\": \"system\",\n  \"priority\": \"high\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Notifications",
+          "id": "c330c71e-5379-4762-b822-23514178461b",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "my"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Notifications with Filters",
+          "id": "1284608d-44fa-484d-8500-3fd0d89ffa0c",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/my?isRead=false&type=appointment&priority=high",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "my"
+              ],
+              "query": [
+                {
+                  "key": "isRead",
+                  "value": "false"
+                },
+                {
+                  "key": "type",
+                  "value": "appointment"
+                },
+                {
+                  "key": "priority",
+                  "value": "high"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Notifications (Admin)",
+          "id": "598c6162-da04-40de-9bce-bf300c2d9ed4",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Unread Count",
+          "id": "4ceda76d-96bb-4171-80fc-f0a52928268e",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/unread-count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "unread-count"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notification Statistics",
+          "id": "2ae3ce70-3b40-4067-b12d-ab3ba4626400",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification as Read",
+          "id": "8efea84d-33c8-4803-acdb-f28c2d21ff11",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/:id/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                ":id",
+                "read"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "notification_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark All as Read",
+          "id": "617f20f3-ba55-4044-9402-8c844d3d50c6",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/read-all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "read-all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notification",
+          "id": "60ac45c3-464b-48bf-a8bd-0d7152bbca39",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "notification_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete All Read Notifications",
+          "id": "abc0a44d-071a-4072-ab26-dffb5bb43a44",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "read"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "b37fd41f-b868-408d-b746-958485ff1814"
+    },
+    {
+      "name": "Section 5: Feedback",
+      "item": [
+        {
+          "name": "Submit Feedback (Public)",
+          "id": "fc31795b-046c-445a-8667-f47d82a5605d",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"+1234567890\",\n  \"subject\": \"Excellent Service\",\n  \"category\": \"appreciation\",\n  \"message\": \"I had a wonderful experience at your clinic. The staff was very helpful and professional.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/feedback/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "feedback",
+                "submit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Feedback (Logged in)",
+          "id": "0bc76ef9-2530-485f-8e51-480fa30c05ce",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane@example.com\",\n  \"subject\": \"Appointment Delay\",\n  \"category\": \"complaint\",\n  \"message\": \"My appointment was delayed by 30 minutes. Please improve scheduling.\",\n  \"priority\": \"high\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/feedback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "feedback"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Feedback (Admin)",
+          "id": "b7332783-ba82-434d-904e-8701b729d317",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/feedback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "feedback"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Feedback with Filters (Admin)",
+          "id": "cb0bf6ce-f8c7-41ac-8815-b90718ed4740",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/feedback?status=pending&category=complaint&priority=high",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "feedback"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                },
+                {
+                  "key": "category",
+                  "value": "complaint"
+                },
+                {
+                  "key": "priority",
+                  "value": "high"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Feedback Statistics (Admin)",
+          "id": "10f530ab-6db9-4b67-8abf-099f1b80790b",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/feedback/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "feedback",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Feedback by ID (Admin)",
+          "id": "4a8945f2-1041-463d-b449-9018b3a2a0a9",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/feedback/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "feedback",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "feedback_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Feedback (Admin)",
+          "id": "eb62b87a-7217-4457-a62a-d8d7f5fb7b23",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"resolved\",\n  \"response\": \"Thank you for your feedback. We have addressed the scheduling issue and implemented better time management.\",\n  \"adminNotes\": \"Spoke with scheduling team. Issue resolved.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/feedback/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "feedback",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "feedback_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Feedback (Admin)",
+          "id": "a5a22836-b3f6-41de-93fc-71ed6fdd8828",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/feedback/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "feedback",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "feedback_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "87400d70-9871-49ed-b282-936a497330d7"
+    },
+    {
+      "name": "Section 6: Reports & Analytics",
+      "item": [
+        {
+          "name": "Get Dashboard Statistics",
+          "id": "0bc07e8a-de50-4ea3-a21a-5ea56ea883b5",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/dashboard-stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "dashboard-stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Statistics",
+          "id": "5065d6f4-cd46-4c41-9ba4-15bef0774dba",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/patient-stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "patient-stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Appointment Statistics",
+          "id": "b70fbb2e-6e8f-460d-bf11-44e5cd32d0ba",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/appointment-stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "appointment-stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Statistics",
+          "id": "7a7217a7-04cf-4832-86c2-98c0ad1e01e2",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/payment-stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "payment-stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor Statistics",
+          "id": "d9fcf2ba-a120-482a-a90d-30b7e447026a",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/doctor-stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "doctor-stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate PDF Report - Dashboard",
+          "id": "1fa09eb4-7c28-4d15-9ffc-075365977d20",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/generate-pdf?reportType=dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "generate-pdf"
+              ],
+              "query": [
+                {
+                  "key": "reportType",
+                  "value": "dashboard"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Patients to CSV",
+          "id": "81bf8380-4a07-42e1-9796-974b9d64c448",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/export-csv?dataType=patients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "export-csv"
+              ],
+              "query": [
+                {
+                  "key": "dataType",
+                  "value": "patients"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Appointments to CSV",
+          "id": "928ed113-aef9-4eeb-b39a-7c17cc98b709",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/export-csv?dataType=appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "export-csv"
+              ],
+              "query": [
+                {
+                  "key": "dataType",
+                  "value": "appointments"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Payments to CSV",
+          "id": "c9ad96da-b8be-4b6a-b497-f6968b97493f",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/export-csv?dataType=payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "export-csv"
+              ],
+              "query": [
+                {
+                  "key": "dataType",
+                  "value": "payments"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "545eb0b0-80fb-45b9-87f9-bfe1c39ca447"
+    },
+    {
+      "name": "Section 7: File Upload",
+      "item": [
+        {
+          "name": "Upload Lab Report File",
+          "id": "4cdc3d10-14c2-4994-9336-e96a3a1f90ce",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [
+                    "/path/to/your/file.pdf"
+                  ]
+                },
+                {
+                  "key": "labReportId",
+                  "value": "lab_report_id_here",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/uploads/lab-report",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "uploads",
+                "lab-report"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Patient Document",
+          "id": "0396cd41-9024-48bb-be2b-6e427f82320c",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [
+                    "/path/to/your/document.pdf"
+                  ]
+                },
+                {
+                  "key": "patientId",
+                  "value": "patient_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "documentType",
+                  "value": "medical_record",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/uploads/patient-document",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "uploads",
+                "patient-document"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Prescription File",
+          "id": "efeeed21-c745-488a-ab5c-f6307d829173",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [
+                    "/path/to/your/prescription.pdf"
+                  ]
+                },
+                {
+                  "key": "prescriptionId",
+                  "value": "prescription_id_here",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/uploads/prescription",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "uploads",
+                "prescription"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload User Avatar",
+          "id": "447db3dc-70ac-45ac-bd1a-7fcc0c522450",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [
+                    "/path/to/your/avatar.jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/uploads/avatar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "uploads",
+                "avatar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete File",
+          "id": "8851d013-b7ac-4520-92de-23a8baf15fbb",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fileUrl\": \"/uploads/lab-reports/file-123456.pdf\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/uploads",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "uploads"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get File",
+          "id": "5e2b5800-b506-4de3-b83f-1edea49bc118",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/uploads/:folder/:fileName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "uploads",
+                ":folder",
+                ":fileName"
+              ],
+              "variable": [
+                {
+                  "key": "folder",
+                  "value": "lab-reports"
+                },
+                {
+                  "key": "fileName",
+                  "value": "file-123456.pdf"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "dcf0c8a1-cbf8-46cb-b4e6-6e42238d6c90"
+    },
+    {
+      "name": "Section 8: Enhanced Appointments",
+      "item": [
+        {
+          "name": "Create Appointment",
+          "id": "67c1e3b6-04ad-4ed2-b0b2-68313565ce28",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctorId\": \"doctor_id_here\",\n  \"patient\": {\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"phone\": \"+1234567890\"\n  },\n  \"date\": \"2024-12-25\",\n  \"startTime\": \"10:00\",\n  \"endTime\": \"10:30\",\n  \"notes\": \"Regular checkup\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Appointments",
+          "id": "ae9ac467-80b9-463d-a816-e7f75b93f494",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Appointment Statistics",
+          "id": "ddc4684e-1882-4df6-8a4f-0035b14b7058",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Time Slots",
+          "id": "a66a6566-b1f0-4e6a-ab66-ae7e4ae13c1e",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/available-slots?doctorId=doctor_id_here&date=2024-12-25",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                "available-slots"
+              ],
+              "query": [
+                {
+                  "key": "doctorId",
+                  "value": "doctor_id_here"
+                },
+                {
+                  "key": "date",
+                  "value": "2024-12-25"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Today's Appointments",
+          "id": "07656a8f-3059-4333-8488-05a39aa2e943",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/today",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                "today"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Upcoming Appointments",
+          "id": "ccd51f0f-8e70-4005-a6c2-e98581ba00f4",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/upcoming",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                "upcoming"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Appointments",
+          "id": "a2d0c4c1-2e93-4672-a33b-5329fd25bcfe",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/patient/:patientId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                "patient",
+                ":patientId"
+              ],
+              "variable": [
+                {
+                  "key": "patientId",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor Appointments",
+          "id": "53389c91-3740-46c7-a9e3-a817a12f9b39",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/doctor/:doctorId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                "doctor",
+                ":doctorId"
+              ],
+              "variable": [
+                {
+                  "key": "doctorId",
+                  "value": "doctor_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reschedule Appointment",
+          "id": "61c7094a-0bb1-4ee7-b99f-e998ff083bc3",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2024-12-26\",\n  \"startTime\": \"14:00\",\n  \"endTime\": \"14:30\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/:id/reschedule",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                ":id",
+                "reschedule"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "appointment_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Appointment Status",
+          "id": "78076f7a-c2bf-445d-9be9-e8405f67e10f",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/:id/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                ":id",
+                "status"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "appointment_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Appointment",
+          "id": "7ad63ae8-5ba5-4462-8424-42e47ccff912",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/:id/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "appointments",
+                ":id",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "appointment_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "432dfe29-d982-49b8-99f5-0a4afd9b3032"
+    },
+    {
+      "name": "Section 9: Enhanced Patients",
+      "item": [
+        {
+          "name": "Create Patient",
+          "id": "569de2e6-5875-4e28-861d-0140511bdb88",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"+1234567890\",\n  \"gender\": \"female\",\n  \"dateOfBirth\": \"1990-05-15\",\n  \"address\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zip\": \"10001\"\n  },\n  \"status\": \"confirmed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/patients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Patients",
+          "id": "94a4f7b5-8e57-4f42-b3f4-9d0cd9a3dfc4",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Patients",
+          "id": "693181d9-fe5f-4a3d-874c-520e8460f00b",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients?search=jane&status=confirmed",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "jane"
+                },
+                {
+                  "key": "status",
+                  "value": "confirmed"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient by ID",
+          "id": "7eec7f9d-4d8f-45fe-afbc-1e3bc18a3361",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Medical History",
+          "id": "a8893fe9-9e89-4a2c-b5a7-926a6b850a08",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/:id/medical-history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                ":id",
+                "medical-history"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Prescriptions",
+          "id": "b5ea91c5-ac23-43ab-96f8-c520dd49671b",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/:id/prescriptions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                ":id",
+                "prescriptions"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Documents",
+          "id": "daec4d95-3111-482f-9366-188bd8525e95",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/:id/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                ":id",
+                "documents"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Statistics",
+          "id": "c36ff8cb-efbb-4657-b399-8483296ae344",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/:id/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                ":id",
+                "stats"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Patient Note",
+          "id": "48e81a71-3dae-4488-bf43-7ca0f5f9bb12",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Patient reported feeling better after medication. Follow-up in 2 weeks recommended.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/:id/notes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                ":id",
+                "notes"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Patient",
+          "id": "ca2c9e72-969b-4319-bf0f-bf7c4108c4ad",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+9876543210\",\n  \"status\": \"confirmed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Patient",
+          "id": "f3a54a8d-80b8-4b94-bd2c-1257ef151d9e",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patients",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "69b94a97-ab76-452c-b94f-9d5617ca8c5d"
+    },
+    {
+      "name": "Section 10: Enhanced Doctors",
+      "item": [
+        {
+          "name": "Create Doctor",
+          "id": "9842823a-73a8-405a-b2c9-3777953732e0",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dr. Sarah Johnson\",\n  \"specialty\": \"Cardiology\",\n  \"email\": \"sarah.johnson@clinic.com\",\n  \"phone\": \"+1234567890\",\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doctors"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Doctors",
+          "id": "56f8f441-7a7c-42e0-801e-7414a5c8eb28",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doctors"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor by ID",
+          "id": "e6bbbdd0-84b5-4a22-b26e-99c7fdec0195",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doctors",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "doctor_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor Schedule",
+          "id": "b9c9147c-4cba-418d-9e50-04507a6aa4a8",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/:id/schedule?startDate=2024-12-20&endDate=2024-12-27",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doctors",
+                ":id",
+                "schedule"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-12-20"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-27"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "doctor_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor Today's Appointments",
+          "id": "2e993182-8627-4b71-9a76-7564edefa7ec",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/:id/today-appointments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doctors",
+                ":id",
+                "today-appointments"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "doctor_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Assigned Patients",
+          "id": "69d3a17a-a23e-4a90-a848-e763e0b99d6c",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/:id/patients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doctors",
+                ":id",
+                "patients"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "doctor_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor Statistics",
+          "id": "c134fae0-1d8c-4796-aa54-d37c4f3355bf",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/:id/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doctors",
+                ":id",
+                "stats"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "doctor_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Doctor",
+          "id": "eb65f62f-c033-4c7e-a24a-2ca474bd6eb7",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_leave\",\n  \"phone\": \"+9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doctors",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "doctor_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Doctor",
+          "id": "a422dfb2-8dc6-4d14-a139-4e7037421f01",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doctors",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "doctor_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "87d780ac-33d6-4f50-b1c9-ed4deac1b360"
+    },
+    {
+      "name": "Section 11: Enhanced Lab Reports",
+      "item": [
+        {
+          "name": "Create Lab Report",
+          "id": "5752c4e2-a229-4e54-b5d8-7a3a0a96321e",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient\": \"patient_id_here\",\n  \"doctor\": \"doctor_id_here\",\n  \"testName\": \"Complete Blood Count (CBC)\",\n  \"testDate\": \"2024-12-20\",\n  \"status\": \"pending\",\n  \"result\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lab-reports",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lab-reports"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Lab Reports",
+          "id": "d98a3a40-b151-450d-98ce-1a0383db05a5",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/lab-reports",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lab-reports"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Lab Statistics",
+          "id": "297e41de-bc85-46d4-b826-72e1fe8e9f7f",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/lab-reports/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lab-reports",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Reports",
+          "id": "025ddbb2-2e9d-416d-9212-4f682fe08e80",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/lab-reports/pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lab-reports",
+                "pending"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Lab Reports",
+          "id": "33d4885e-4fe7-42e6-a1f7-51dbcab76599",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/lab-reports/patient/:patientId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lab-reports",
+                "patient",
+                ":patientId"
+              ],
+              "variable": [
+                {
+                  "key": "patientId",
+                  "value": "patient_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Lab Report by ID",
+          "id": "fa986c94-b933-49df-bc3d-146e906e0261",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/lab-reports/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lab-reports",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "lab_report_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Lab Report File",
+          "id": "4e10e670-8781-4765-af78-4ab9fa1970aa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [
+                    "/path/to/lab-report.pdf"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lab-reports/:id/upload-file",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lab-reports",
+                ":id",
+                "upload-file"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "lab_report_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Report Completed",
+          "id": "9871f41d-a0d3-465c-93f6-e3165fc74090",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/lab-reports/:id/mark-completed",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lab-reports",
+                ":id",
+                "mark-completed"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "lab_report_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Lab Report",
+          "id": "286ccfcb-2508-4a21-9aa7-e43d98a35895",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"result\": \"All values within normal range\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lab-reports/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lab-reports",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "lab_report_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "1ea9eab7-75bb-4d37-a8b7-eb9c34523d76"
+    },
+    {
+      "name": "Section 12: Enhanced Staff & Check-in",
+      "item": [
+        {
+          "name": "Create Staff",
+          "id": "5668eacf-8802-479b-8269-9721dd6e6ca9",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson\",\n  \"jobRole\": \"Nurse\",\n  \"department\": \"Emergency\",\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/staff",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Staff",
+          "id": "3f85827d-39ad-45fd-af21-942bb7b2d1d7",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/staff",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Staff Statistics",
+          "id": "8bc939a1-9a5f-47d1-9173-7b54eb67bd57",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/staff/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check-in Patient",
+          "id": "29d803a4-8f53-486b-bce5-7af277333c82",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": \"patient_id_here\",\n  \"appointmentId\": \"appointment_id_here\",\n  \"visitReason\": \"Follow-up consultation\",\n  \"notes\": \"Patient arrived on time\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/staff/check-in",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "check-in"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Check-in History",
+          "id": "3caa230f-2154-416f-a6c7-626d6d3633e9",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/staff/check-ins",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "check-ins"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Check-ins with Filters",
+          "id": "7b0281bf-8fbb-4c77-b597-02a696bce58d",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/staff/check-ins?status=waiting&patientId=patient_id&startDate=2024-12-01&endDate=2024-12-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "check-ins"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "waiting"
+                },
+                {
+                  "key": "patientId",
+                  "value": "patient_id"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-12-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Today's Check-ins",
+          "id": "ec4c66cd-0057-4738-bc7b-142fb2eca300",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/staff/check-ins/today",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "check-ins",
+                "today"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Check-in Status",
+          "id": "608ea331-af46-49ce-b14b-10dc5ecb1183",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_consultation\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/staff/check-ins/:id/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                "check-ins",
+                ":id",
+                "status"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "checkin_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Staff by ID",
+          "id": "efed52a0-4ebb-4aa3-bfd2-542f8f930a8e",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/staff/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "staff_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Staff",
+          "id": "d7da4a1a-95db-445f-a8fe-4851b4e41129",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_leave\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/staff/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "staff_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Staff",
+          "id": "6f9100f4-411e-4c8c-9217-b5d315bce1cd",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/staff/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "staff_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "34195922-0c94-4464-8cb4-a164154136f6"
+    },
+    {
+      "name": "Section 14: Activity Logs",
+      "item": [
+        {
+          "name": "Get My Activity Logs",
+          "id": "14fa7f62-61df-43e8-a4fd-913ac5864d6e",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "activity-logs",
+                "my"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Activity Logs with Filters",
+          "id": "5779a7ef-768a-4120-9409-7e43a4901d42",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs/my?action=create&resource=Patient&limit=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "activity-logs",
+                "my"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "create"
+                },
+                {
+                  "key": "resource",
+                  "value": "Patient"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Activity Logs (Admin)",
+          "id": "a750729a-46f1-4168-83df-5e695cc05883",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "activity-logs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Activity Logs with Filters (Admin)",
+          "id": "dfd39161-a302-421f-a39c-2d5508daf2d4",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs?userId=user_id&action=login&resource=auth&status=success&startDate=2024-12-01&endDate=2024-12-31&limit=100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "activity-logs"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "user_id"
+                },
+                {
+                  "key": "action",
+                  "value": "login"
+                },
+                {
+                  "key": "resource",
+                  "value": "auth"
+                },
+                {
+                  "key": "status",
+                  "value": "success"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-12-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Activity Statistics (Admin)",
+          "id": "62c3209d-461b-44d8-b5cb-64a033c26a7b",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "activity-logs",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Activity Logs (Admin)",
+          "id": "ada72349-635e-46ca-bd6e-06394d8d5dd9",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs/user/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "activity-logs",
+                "user",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Activity with Filters (Admin)",
+          "id": "0a18c9d6-3acb-4989-b391-a35857b1194c",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs/user/:userId?action=create&resource=Appointment&limit=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "activity-logs",
+                "user",
+                ":userId"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "create"
+                },
+                {
+                  "key": "resource",
+                  "value": "Appointment"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Activity Logs to CSV (Admin)",
+          "id": "14aca602-db35-4294-aa1f-c5bbf21ebbda",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs/export",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "activity-logs",
+                "export"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Activity Logs with Filters (Admin)",
+          "id": "e74b7f15-ed67-41a1-9c03-f3cd387f6b8f",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activity-logs/export?userId=user_id&action=login&startDate=2024-12-01&endDate=2024-12-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "activity-logs",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "user_id"
+                },
+                {
+                  "key": "action",
+                  "value": "login"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-12-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "e5713682-7bd3-4e5c-b713-8fa5371bbf07"
+    }
+  ],
+  "variable": [
+    {
+      "id": "efe1970c-3439-4e75-957a-0dbd3d995f92",
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "id": "66105c34-18ba-495c-97f6-2178d85b1a2d",
+      "key": "token",
+      "value": "your_jwt_token_here"
+    }
+  ]
+}

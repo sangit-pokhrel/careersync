@@ -1,0 +1,891 @@
+{
+  "info": {
+    "_postman_id": "c709057d-41b9-4c38-8c53-3ea66ed56288",
+    "name": "Safety Points System Tests",
+    "description": "Complete test suite for the ride-sharing safety points system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Register Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "8272fec9-e0a5-4dca-9e7b-b8056a4fe483",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.collectionVariables.set('adminId', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "234c58fe-5d38-461b-89e7-82d787536698",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "23b6dac7-b73b-44eb-bfc3-6b8405a28f7d",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@test.com\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/register",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Rider",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "bbf5e588-2b79-4bcc-b279-2906a5a4c2df",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.collectionVariables.set('riderId', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "186f4af7-22db-4a58-a48b-49b492c989cc",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "a6b8862f-6330-462c-8995-ffe12a0237a8",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"rider@test.com\",\n  \"password\": \"rider123\",\n  \"role\": \"rider\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/register",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Driver",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "7a890213-41a6-4d00-a1ee-c7e2e6e4fe17",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.collectionVariables.set('driverUserId', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "da8da1e5-8e5c-4d8a-88e4-c1f6bc079d1f",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "44301767-6328-4374-8de6-d3bd73a1951e",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"driver@test.com\",\n  \"password\": \"driver123\",\n  \"role\": \"driver\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/register",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "c7f64ae6-3ddb-4920-ae5f-be1270b9c7e8",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.accessToken) {",
+                  "    pm.collectionVariables.set('ADMIN_TOKEN', jsonData.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "9aa62466-b6dc-479b-acc6-fe8883fa2289",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "1a18b99d-815c-482b-95a4-8834e16ae60b",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@test.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Rider",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "a60f8e57-15d6-49e9-a84f-7ea3bd37a373",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.accessToken) {",
+                  "    pm.collectionVariables.set('RIDER_TOKEN', jsonData.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "95612a3f-ee04-4c38-9b3d-e8073947cfb8",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "dfa1d3cd-9caf-4c2e-9367-37065630034a",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"rider@test.com\",\n  \"password\": \"rider123\"\n  \n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Driver",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "ca9ec955-adf9-4b54-820a-9177e00c853e",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.accessToken) {",
+                  "    pm.collectionVariables.set('DRIVER_TOKEN', jsonData.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "32ce74d8-4512-4a7b-a788-4ea9cf05417c",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "8020b7d4-4324-435e-ac3a-045042d78871",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"driver@test.com\",\n  \"password\": \"driver123\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "fefe1fc2-7b0e-4a66-af62-f1240fff4f69"
+    },
+    {
+      "name": "2. Ride Management",
+      "item": [
+        {
+          "name": "Admin Create Ride",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "7d16ce57-f92c-4a0d-a1c5-7085110e33b9",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.collectionVariables.set('rideId', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "54357309-40c8-47af-a26e-5d2721bf545c",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "303bdcf6-6191-4e78-8c84-50c2a22cd4ad",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token_sg}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rider_id\": \"{{rider_id}}\",\n  \"driver_id\": \"{{driver_id}}\",\n  \"status\": \"requested\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/admin/rides",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "rides"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Start Ride",
+          "id": "fee251a0-5e92-4cc9-92e5-51446944cb44",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{driver_token_sg}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{RIDER_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/rides/{{ride_id_sg}}/start",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "rides",
+                "{{ride_id_sg}}",
+                "start"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Ride",
+          "id": "8b37bbbb-e8d0-4ba6-9d1e-a36845370b67",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{driver_token_sg}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{RIDER_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/rides/{{ride_id_sg}}/complete",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "rides",
+                "{{ride_id_sg}}",
+                "complete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Force Complete",
+          "id": "85e9c302-c6de-4cc0-b532-a6e3f12eabe4",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token_sg}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/admin/rides/{{start_ride_id}}/force-complete",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "rides",
+                "{{start_ride_id}}",
+                "force-complete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Update Ride (Mark Paid)",
+          "id": "980b1813-298e-4b92-84fc-218d39d5bf4e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token_sg}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"is_paid\": true\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/admin/rides/{{ride_id_sg}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "rides",
+                "{{ride_id_sg}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "b6c288bf-d471-45c3-a020-957edeea0ca1"
+    },
+    {
+      "name": "3. Reviews (Safety Tests)",
+      "item": [
+        {
+          "name": "TEST 1: Best Review (+6 max)",
+          "id": "98a3280f-e032-4f52-97c9-844ee819b0ec",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{RIDER_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rideSummary\": {\n    \"rideId\": \"{{rideId}}\",\n    \"riderId\": \"{{riderId}}\",\n    \"driverId\": \"{{driverUserId}}\",\n    \"status\": \"completed\",\n    \"isPaid\": true\n  },\n  \"rating\": { \"stars\": 5 },\n  \"taps\": [\n    { \"key\": \"felt_safe\", \"category\": \"positive\", \"pointValue\": 3 },\n    { \"key\": \"followed_rules\", \"category\": \"positive\", \"pointValue\": 2 },\n    { \"key\": \"respectful\", \"category\": \"positive\", \"pointValue\": 2 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reviews",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reviews"
+              ]
+            },
+            "description": "5 stars + 3 positive taps. Only top 2 taps count (3+2=5), plus 2 from stars = 7, CAPPED at +6"
+          },
+          "response": []
+        },
+        {
+          "name": "TEST 2: Good Review (+5)",
+          "id": "3b46a23f-6684-4892-98f0-bb2da96685af",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rider_token_sg}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{RIDER_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rideSummary\": {\n    \"rideId\": \"{{ride_id_sg}}\",\n    \"riderId\": \"{{rider_id}}\",\n    \"driverId\": \"{{driver_id}}\",\n    \"status\": \"completed\",\n    \"isPaid\": true\n  },\n  \"rating\": { \"stars\": 5 },\n  \"taps\": [\n    { \"key\": \"RESPECTFUL\", \"category\": \"positive\" },\n    { \"key\": \"ROUTE_OK\", \"category\": \"positive\"}\n  ]\n}\n\n\n// {\n//   \"rideSummary\": {\n//     \"rideId\": \"{{ride_id_sg}}\",\n//     \"riderId\": \"{{rider_id}}\",\n//     \"driverId\": \"{{driver_as_user_id}}\",\n//     \"status\": \"completed\",\n//     \"isPaid\": true\n//   },\n//   \"rating\": {\n//     \"stars\": 4\n//   },\n//   \"taps\": [\n//     {\n//       \"key\": \"RESPECTFUL\",\n//       \"category\": \"positive\"\n      \n//     }\n//   ]\n// }\n"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reviews",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reviews"
+              ]
+            },
+            "description": "5 stars (+2) + 2 taps (2+1=3) = +5 total"
+          },
+          "response": []
+        },
+        {
+          "name": "TEST 3: Average Review (+4)",
+          "id": "18d7d934-8260-42f8-a4d2-a08ca3d41c4d",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{RIDER_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rideSummary\": {\n    \"rideId\": \"{{rideId}}\",\n    \"riderId\": \"{{riderId}}\",\n    \"driverId\": \"{{driverUserId}}\",\n    \"status\": \"completed\",\n    \"isPaid\": true\n  },\n  \"rating\": { \"stars\": 4 },\n  \"taps\": [\n    { \"key\": \"felt_safe\", \"category\": \"positive\", \"pointValue\": 3 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reviews",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reviews"
+              ]
+            },
+            "description": "4 stars (+1) + 1 tap (+3) = +4 total"
+          },
+          "response": []
+        },
+        {
+          "name": "TEST 4: Stars Only (+2)",
+          "id": "1808016f-fc44-4821-818a-8ef23cdffea4",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{RIDER_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rideSummary\": {\n    \"rideId\": \"{{rideId}}\",\n    \"riderId\": \"{{riderId}}\",\n    \"driverId\": \"{{driverUserId}}\",\n    \"status\": \"completed\",\n    \"isPaid\": true\n  },\n  \"rating\": { \"stars\": 5 },\n  \"taps\": []\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reviews",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reviews"
+              ]
+            },
+            "description": "5 stars only, no taps = +2 total"
+          },
+          "response": []
+        },
+        {
+          "name": "TEST 5: Negative Review (-10)",
+          "id": "252ce1f7-1315-4f89-8b75-3c43a1eb83f2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{RIDER_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rideSummary\": {\n    \"rideId\": \"{{rideId}}\",\n    \"riderId\": \"{{riderId}}\",\n    \"driverId\": \"{{driverUserId}}\",\n    \"status\": \"completed\",\n    \"isPaid\": true\n  },\n  \"rating\": { \"stars\": 2 },\n  \"taps\": [\n    { \"key\": \"unsafe_driving\", \"category\": \"negative\", \"pointValue\": -10 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reviews",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reviews"
+              ]
+            },
+            "description": "2 stars + unsafe driving = -10 (negative overrides positive)"
+          },
+          "response": []
+        },
+        {
+          "name": "TEST 6: Driver Reviews Rider (No Safety Impact)",
+          "id": "7b00fcee-42b0-4e51-b7b9-b7f64bf82dfe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{DRIVER_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rideSummary\": {\n    \"rideId\": \"{{rideId}}\",\n    \"riderId\": \"{{riderId}}\",\n    \"driverId\": \"{{driverUserId}}\",\n    \"status\": \"completed\",\n    \"isPaid\": true\n  },\n  \"rating\": { \"stars\": 5 },\n  \"taps\": [\n    { \"key\": \"polite_rider\", \"category\": \"positive\", \"pointValue\": 2 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reviews",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reviews"
+              ]
+            },
+            "description": "Driver → Rider reviews should NOT affect safety points"
+          },
+          "response": []
+        }
+      ],
+      "id": "58518eb8-4259-4ba7-8b5b-6860d040f560"
+    },
+    {
+      "name": "4. Admin Verification",
+      "item": [
+        {
+          "name": "Get Ride",
+          "id": "a8870c35-364b-4648-ac15-2d993a20fc8c",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ADMIN_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/admin/rides/{{rideId}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "rides",
+                "{{rideId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "8c331f7a-50c6-445a-b189-55c8afc458f0"
+    }
+  ],
+  "variable": [
+    {
+      "id": "3d37cc85-0937-41cd-a4a3-b27bdcd004b3",
+      "key": "BASE_URL",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "id": "75e260ed-c831-4b13-b6e1-64474f777655",
+      "key": "ADMIN_TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "0143c1bc-7ccb-4005-8045-f4cd4a7f359a",
+      "key": "RIDER_TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "462b7b27-6364-424b-afee-0d411b2c873e",
+      "key": "DRIVER_TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "28df0bdc-dc5a-4bcd-a614-43c58fbb3d1e",
+      "key": "riderId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "753a0224-350c-437d-82e0-8f7d605a244a",
+      "key": "driverUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "ad12a301-8ee8-4cbe-bc39-5b66d7bfb655",
+      "key": "driverId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "52521d29-03aa-4f0f-a79d-7d74b306359f",
+      "key": "rideId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

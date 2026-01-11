@@ -1,0 +1,99 @@
+{
+  "info": {
+    "_postman_id": "42e0e2d2-2231-464e-a2d6-d28ad5847c01",
+    "name": "Career Coach & Recruiter System - COMPLETE",
+    "description": "All 43 API endpoints for Career Coach, Recruiter, and Student interview system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "id": "06d586de-c63f-4783-b12d-0dea04047c82",
+      "key": "base_url",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "id": "67ee3572-56e4-4770-8c6e-2701f9a3ad18",
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "33924ac8-31b5-443a-8244-c34fc34b2c52",
+      "key": "coachToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "ed349633-29fe-4f9e-a83d-5330401f174b",
+      "key": "recruiterToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "1f3962f7-d381-4b88-902d-f3b2223a39a5",
+      "key": "studentToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "0ce95113-a4e1-431c-baab-a2f657b2c4e4",
+      "key": "studentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "d7c6e4e7-25c4-4081-a598-7062c9bfd352",
+      "key": "interviewId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "54dfe1ba-090a-4c77-9943-efb5790978b8",
+      "key": "submissionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "23bfb4de-dfdf-498e-be9f-da1f519436ae",
+      "key": "videoInterviewId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "67f80bab-1c5d-4f0e-9645-caaf9ab5a381",
+      "key": "assignmentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "ebddedbf-0c87-452c-af44-9d689d54c536",
+      "key": "jobId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "f03e0fd8-a3c9-4fe7-8ac7-ef3f421b6dcc",
+      "key": "applicationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "48503f0f-c181-4f73-afbc-b2b6a1919128",
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

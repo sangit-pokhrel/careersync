@@ -1,0 +1,1045 @@
+{
+  "info": {
+    "_postman_id": "216db2d0-e94b-4af8-ab4f-20ad021c0472",
+    "name": "User Permissions Testing",
+    "description": "Complete testing suite for user and admin permissions",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register New User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('userId', jsonData.user._id);",
+                  "    console.log('✅ User created:', jsonData.user._id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "136a2f34-c7af-40e9-8025-4968b420f4e5"
+              }
+            }
+          ],
+          "id": "f11bc7a4-1b33-492c-a91d-04696be35c06",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"role\": \"job_seeker\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Register a new user (job_seeker)"
+          },
+          "response": []
+        },
+        {
+          "name": "Login as User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('userToken', jsonData.accessToken);",
+                  "    pm.environment.set('userId', jsonData.user._id);",
+                  "    console.log('✅ User logged in');",
+                  "    console.log('Token:', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "1a62a236-d0b8-437d-bf37-d2f2ed93622a"
+              }
+            }
+          ],
+          "id": "ca37c134-8f8e-4b55-9991-27b809cd537d",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login as regular user (saves token)"
+          },
+          "response": []
+        },
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('adminToken', jsonData.accessToken);",
+                  "    pm.environment.set('adminId', jsonData.user._id);",
+                  "    console.log('✅ Admin logged in');",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "id": "962a0c6d-9dc9-4928-8bad-57c4765513f1"
+              }
+            }
+          ],
+          "id": "65374df5-70fe-4718-a26c-3023b2a36aee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"adminpass\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login as admin (saves token)"
+          },
+          "response": []
+        }
+      ],
+      "id": "4732f827-6b59-4c2b-9c30-45a711e8a3ce"
+    },
+    {
+      "name": "2. User Self-Service (LIMITED)",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "id": "b8f18c65-682e-42e1-8d42-83675c6c1175",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Get current user's profile"
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Update My Profile (Allowed Fields)",
+          "id": "ad3e3aa1-abc9-4faf-a4e3-c5a5fcddb4e3",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"headline\": \"Full Stack Developer\",\n  \"location\": \"Kathmandu, Nepal\",\n  \"phoneNumber\": \"+977-9841234567\",\n  \"skills\": [\"JavaScript\", \"React\", \"Node.js\", \"MongoDB\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "✅ SUCCESS - User can update these fields"
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Try to Change Email (Should Fail)",
+          "id": "2fd3a269-6764-4748-b46e-abd6f8815631",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newemail@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "❌ IGNORED - User cannot change email (field not in allowed list)"
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Try to Change Role (Should Fail)",
+          "id": "e8996789-50ab-42d7-a7f2-d7b5e98e1636",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "❌ IGNORED - User cannot change role"
+          },
+          "response": []
+        },
+        {
+          "name": "❌ Try to Verify Email (Should Fail)",
+          "id": "a2791755-a605-4375-853f-f29ad6f9c907",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isEmailVerified\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "❌ IGNORED - User cannot verify their own email"
+          },
+          "response": []
+        },
+        {
+          "name": "Change My Password",
+          "id": "2679a923-fe73-4d88-be26-2ce710bd0afb",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me/change-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "change-password"
+              ]
+            },
+            "description": "✅ User can change their own password"
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate My Account",
+          "id": "d9975229-a26e-403d-8442-786b18ebc70f",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Soft delete - deactivate own account"
+          },
+          "response": []
+        }
+      ],
+      "id": "23b499a4-89ed-4a97-805b-567741e4c8c2"
+    },
+    {
+      "name": "3. User Tries Admin Actions (SHOULD FAIL)",
+      "item": [
+        {
+          "name": "❌ User Tries to List All Users",
+          "id": "28f24ee6-4d1f-4b02-859a-610beaca87b3",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "❌ 403 Forbidden - Only admins can list users"
+          },
+          "response": []
+        },
+        {
+          "name": "❌ User Tries to Update Another User",
+          "id": "1a58b537-ddd4-4b9d-bbd5-1b6b888af5fe",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Hacked\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{adminId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{adminId}}"
+              ]
+            },
+            "description": "❌ 403 Forbidden - Users cannot update other users"
+          },
+          "response": []
+        },
+        {
+          "name": "❌ User Tries to Delete Another User",
+          "id": "f9454304-9785-41c6-b46c-68ad19e5ca82",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{adminId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{adminId}}"
+              ]
+            },
+            "description": "❌ 403 Forbidden - Users cannot delete other users"
+          },
+          "response": []
+        }
+      ],
+      "id": "74dccf75-697e-4a2b-9544-5d1cba283dd8"
+    },
+    {
+      "name": "4. Admin Full Control (ALL FIELDS)",
+      "item": [
+        {
+          "name": "List All Users",
+          "id": "84dd052b-6fa3-449f-a3c2-7f9e21193592",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users?page=1&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "✅ Admin can list all users with pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Users",
+          "id": "012b4f5e-f868-47d4-a72c-ba4c24199fd5",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users?search=test",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "test"
+                }
+              ]
+            },
+            "description": "Search users by email, firstName, or lastName"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Role",
+          "id": "a7eccafa-a392-4721-8bf6-3d9230122d48",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users?role=job_seeker",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "job_seeker"
+                }
+              ]
+            },
+            "description": "Filter users by role"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "id": "0ac18845-802d-4142-98e4-2b78bbd3372a",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "Get any user by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Update User - Change Email",
+          "id": "277546f1-309b-4760-8096-f1b1f948e77b",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"updatedemail@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "✅ Admin CAN change user's email"
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Update User - Change Role",
+          "id": "e2809a57-e15e-4f50-b41d-04ad33b9e4ec",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"employer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "✅ Admin CAN change user's role"
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Update User - Change Status",
+          "id": "b7a738b7-b196-4e29-a85b-ec4ca4f29762",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "✅ Admin CAN activate/deactivate users"
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Update User - Verify Email",
+          "id": "71bf0c16-7711-4b1d-bd3e-3c40067fe5bb",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isEmailVerified\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "✅ Admin CAN verify user's email"
+          },
+          "response": []
+        },
+        {
+          "name": "✅ Update User - All Fields at Once",
+          "id": "68db668b-8041-4723-a9c8-d18e7852196e",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Updated\",\n  \"lastName\": \"Name\",\n  \"email\": \"newemail@example.com\",\n  \"role\": \"employer\",\n  \"status\": \"active\",\n  \"isEmailVerified\": true,\n  \"headline\": \"Senior Developer\",\n  \"location\": \"Pokhara\",\n  \"skills\": [\"Python\", \"Django\", \"PostgreSQL\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "✅ Admin can update ALL fields at once"
+          },
+          "response": []
+        },
+        {
+          "name": "Reset User Password",
+          "id": "41068d9e-f867-4a06-b1ad-3baa84c4af00",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newPassword\": \"resetpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{userId}}/reset-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "reset-password"
+              ]
+            },
+            "description": "✅ Admin can reset any user's password (no current password needed)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User Permanently",
+          "id": "7bc6df4b-45f5-44d6-b91e-f1ee57f34c09",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{userId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "✅ Admin can permanently delete users"
+          },
+          "response": []
+        }
+      ],
+      "id": "bfb5bb5f-1015-4beb-84ec-f22008ba14e6"
+    },
+    {
+      "name": "5. Edge Cases & Validation",
+      "item": [
+        {
+          "name": "Create User - Missing Email",
+          "id": "315641b5-95f4-4139-a694-0af25a13012a",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "❌ 400 - Email required"
+          },
+          "response": []
+        },
+        {
+          "name": "Create User - Duplicate Email",
+          "id": "da74f1d0-f4ca-46d2-b8e9-350384a70e44",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "❌ 409 - Email already exists"
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password - Wrong Current",
+          "id": "0e2fcab0-aafa-40e3-a0ba-3c964d89ac54",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"wrongpassword\",\n  \"newPassword\": \"newpass123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me/change-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "change-password"
+              ]
+            },
+            "description": "❌ 400 - Current password incorrect"
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password - Too Short",
+          "id": "9e6334f0-ed52-4657-9190-5485b8b12ecb",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me/change-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "change-password"
+              ]
+            },
+            "description": "❌ 400 - Password must be at least 6 characters"
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Update - Invalid User ID",
+          "id": "62b55eaf-31f0-47e5-9d33-e36f9f111f2c",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Test\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/invalid-id-format",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "invalid-id-format"
+              ]
+            },
+            "description": "❌ 400 - Invalid user ID format"
+          },
+          "response": []
+        }
+      ],
+      "id": "b69f4341-3ba7-427a-9b49-11c0668bb1f5"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "console.log('🚀 Request:', pm.request.method, pm.request.url.toString());"
+        ],
+        "id": "6c9ff9e7-6940-4636-a9a6-a44be446f23b"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (pm.response.code >= 200 && pm.response.code < 300) {",
+          "    console.log('✅ Success:', pm.response.code);",
+          "} else if (pm.response.code === 403) {",
+          "    console.log('🔒 Forbidden (expected for permission tests)');",
+          "} else {",
+          "    console.log('❌ Error:', pm.response.code, pm.response.json());",
+          "}"
+        ],
+        "id": "2451507e-00b8-43fd-a925-2973a3706416"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "22def2e8-4d92-4da3-b0b5-5a0341ee4d28",
+      "key": "base_url",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "id": "9d4de332-128c-4618-a384-ee3529ce2adb",
+      "key": "userToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "79f58cd0-4536-4125-bae9-3c8725a14e24",
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "de5105f9-52a2-40d0-b4b5-5ef61b4ffe22",
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "07eb7024-3b27-4260-9435-d9aab3013d6a",
+      "key": "adminId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

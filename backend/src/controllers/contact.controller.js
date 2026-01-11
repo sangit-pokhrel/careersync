@@ -269,12 +269,16 @@
 // };
 
 
-
 const sanitizeHtml = require('sanitize-html');
 const mongoose = require('mongoose');
 const ContactInquiry = require('../models/contactInquiry.model');
+const ContactRateLimit = require('../models/contactRateLimit.model');
+const BlockedIP = require('../models/blockedIP.model');
 
 const MAX_LIMIT = 200;
+const MAX_INQUIRIES_PER_DAY = 3;
+const COOLDOWN_MINUTES = 5;
+const BLOCK_AFTER_VIOLATIONS = 5; // Block IP after 5 violations
 
 function isAdmin(user) {
   return user && user.role === 'admin';
@@ -292,30 +296,130 @@ function sanitizeFields(body = {}) {
   };
 }
 
-// ==================== USER ENDPOINTS ====================
+// Helper to get client IP
+function getClientIP(req) {
+  // Check various headers for the real IP (useful when behind proxy/load balancer)
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) {
+    // x-forwarded-for can be comma-separated, take the first one
+    return forwarded.split(',')[0].trim();
+  }
+  return req.headers['x-real-ip'] || 
+         req.connection?.remoteAddress || 
+         req.socket?.remoteAddress ||
+         req.ip ||
+         'unknown';
+}
 
-// CREATE - Users can create inquiries
+// ==================== PUBLIC ENDPOINT (No Auth Required) ====================
+
+// CREATE - Public contact form submission with rate limiting
 async function createContact(req, res) {
   try {
-    const userId = req.user ? req.user._id : null;
+    const clientIP = getClientIP(req);
+    
+    // Check if IP is blocked
+    const blockStatus = await BlockedIP.isBlocked(clientIP);
+    if (blockStatus.blocked) {
+      return res.status(403).json({
+        error: 'Your IP has been blocked due to excessive requests.',
+        reason: blockStatus.reason,
+        blockedUntil: blockStatus.blockedUntil
+      });
+    }
+    
+    // Check rate limit
+    const rateLimitStatus = await ContactRateLimit.checkRateLimit(
+      clientIP, 
+      MAX_INQUIRIES_PER_DAY, 
+      COOLDOWN_MINUTES
+    );
+    
+    if (!rateLimitStatus.allowed) {
+      // Track violation attempts
+      const stats = await ContactRateLimit.getStats(clientIP);
+      
+      // If user keeps trying after hitting limit, consider blocking
+      if (rateLimitStatus.reason === 'daily_limit' && stats.todayCount >= MAX_INQUIRIES_PER_DAY + BLOCK_AFTER_VIOLATIONS) {
+        await BlockedIP.blockIP(clientIP, 'Repeated rate limit violations', 24); // Block for 24 hours
+        return res.status(403).json({
+          error: 'Your IP has been temporarily blocked due to repeated rate limit violations.',
+          blockedUntil: new Date(Date.now() + 24 * 60 * 60 * 1000)
+        });
+      }
+      
+      return res.status(429).json({
+        error: rateLimitStatus.message,
+        reason: rateLimitStatus.reason,
+        remainingToday: rateLimitStatus.remainingToday,
+        retryAfter: rateLimitStatus.retryAfter || null,
+        nextAllowedAt: rateLimitStatus.nextAllowedAt
+      });
+    }
+    
+    // Validate required fields
     const fields = sanitizeFields(req.body);
+    
+    if (!fields.name || !fields.email || !fields.subject || !fields.message) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['name', 'email', 'subject', 'message']
+      });
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(fields.email)) {
+      return res.status(400).json({
+        error: 'Invalid email format'
+      });
+    }
+    
+    // Optional: Get user ID if authenticated (but not required)
+    const userId = req.user ? req.user._id : null;
 
     const obj = {
       user: userId,
       ...fields,
-      status: 'new' // Always set to 'new' when user creates
+      status: 'new',
+      ipAddress: clientIP, // Track IP for reference
+      submittedAt: new Date()
     };
 
     const saved = await ContactInquiry.create(obj);
+    
+    // Record the inquiry for rate limiting
+    await ContactRateLimit.recordInquiry(clientIP);
+    
+    // Get updated rate limit info
+    const updatedRateLimit = await ContactRateLimit.checkRateLimit(
+      clientIP, 
+      MAX_INQUIRIES_PER_DAY, 
+      COOLDOWN_MINUTES
+    );
+    
     return res.status(201).json({ 
       success: true,
-      inquiry: saved 
+      inquiry: {
+        id: saved._id,
+        name: saved.name,
+        email: saved.email,
+        subject: saved.subject,
+        inquiryType: saved.inquiryType,
+        createdAt: saved.createdAt
+      },
+      rateLimit: {
+        remainingToday: updatedRateLimit.remainingToday,
+        nextAllowedAt: new Date(Date.now() + COOLDOWN_MINUTES * 60 * 1000)
+      }
     });
   } catch (err) {
     console.error('createContact error', err);
     return res.status(500).json({ error: 'Unable to create contact inquiry' });
   }
 }
+
+// ==================== USER ENDPOINTS (Auth Required) ====================
 
 // GET MY INQUIRIES - Users can only see their own
 async function getMyInquiries(req, res) {
@@ -329,7 +433,6 @@ async function getMyInquiries(req, res) {
     limit = Math.min(MAX_LIMIT, Math.max(1, Number(limit) || 50));
     const skip = (page - 1) * limit;
 
-    // Only show user's own inquiries
     const filter = { 
       user: req.user._id,
       deletedAt: { $exists: false } 
@@ -369,7 +472,6 @@ async function getMyInquiry(req, res) {
       return res.status(404).json({ error: 'Inquiry not found' });
     }
 
-    // User can only see their own inquiry
     if (!req.user || String(doc.user) !== String(req.user._id)) {
       return res.status(403).json({ error: 'Forbidden: You can only view your own inquiries' });
     }
@@ -397,7 +499,6 @@ async function deleteMyInquiry(req, res) {
       return res.status(404).json({ error: 'Inquiry not found' });
     }
 
-    // User can only delete their own inquiry
     if (!req.user || String(doc.user) !== String(req.user._id)) {
       return res.status(403).json({ error: 'Forbidden: You can only delete your own inquiries' });
     }
@@ -429,7 +530,6 @@ async function adminGetAllInquiries(req, res) {
 
     const filter = { deletedAt: { $exists: false } };
 
-    // Admin filters
     if (req.query.status) {
       filter.status = sanitizeHtml(req.query.status);
     }
@@ -492,38 +592,6 @@ async function adminGetInquiry(req, res) {
   }
 }
 
-// ADMIN - Create inquiry (on behalf of user)
-async function adminCreateInquiry(req, res) {
-  try {
-    if (!isAdmin(req.user)) {
-      return res.status(403).json({ error: 'Forbidden: Admin access required' });
-    }
-
-    const fields = sanitizeFields(req.body);
-    const status = req.body.status || 'new';
-
-    // Validate status
-    if (!['new', 'contacted', 'resolved'].includes(status)) {
-      return res.status(400).json({ error: 'Invalid status value' });
-    }
-
-    const obj = {
-      user: req.body.userId || null, // Admin can assign to a user
-      ...fields,
-      status
-    };
-
-    const saved = await ContactInquiry.create(obj);
-    return res.status(201).json({ 
-      success: true,
-      inquiry: saved 
-    });
-  } catch (err) {
-    console.error('adminCreateInquiry error', err);
-    return res.status(500).json({ error: 'Unable to create inquiry' });
-  }
-}
-
 // ADMIN - Update inquiry (can update status and all fields)
 async function adminUpdateInquiry(req, res) {
   try {
@@ -542,9 +610,8 @@ async function adminUpdateInquiry(req, res) {
     }
 
     const fields = sanitizeFields(req.body);
-    
-    // Admin can update status
     const updateData = { ...fields };
+    
     if (req.body.status) {
       if (!['new', 'contacted', 'resolved'].includes(req.body.status)) {
         return res.status(400).json({ error: 'Invalid status value' });
@@ -612,7 +679,6 @@ async function adminDeleteAllInquiries(req, res) {
 
     const filter = { deletedAt: { $exists: false } };
 
-    // Optional filters for safer deletion
     if (req.query.status) {
       filter.status = sanitizeHtml(req.query.status);
     }
@@ -639,9 +705,133 @@ async function adminDeleteAllInquiries(req, res) {
   }
 }
 
+// ==================== ADMIN - IP Management ====================
+
+// ADMIN - Get all blocked IPs
+async function adminGetBlockedIPs(req, res) {
+  try {
+    if (!isAdmin(req.user)) {
+      return res.status(403).json({ error: 'Forbidden: Admin access required' });
+    }
+
+    let { page = 1, limit = 50 } = req.query;
+    page = Math.max(1, Number(page) || 1);
+    limit = Math.min(MAX_LIMIT, Math.max(1, Number(limit) || 50));
+    const skip = (page - 1) * limit;
+
+    const [docs, total] = await Promise.all([
+      BlockedIP.find()
+        .sort({ blockedAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      BlockedIP.countDocuments(),
+    ]);
+
+    return res.json({
+      success: true,
+      page,
+      limit,
+      total,
+      data: docs
+    });
+  } catch (err) {
+    console.error('adminGetBlockedIPs error', err);
+    return res.status(500).json({ error: 'Unable to fetch blocked IPs' });
+  }
+}
+
+// ADMIN - Block an IP manually
+async function adminBlockIP(req, res) {
+  try {
+    if (!isAdmin(req.user)) {
+      return res.status(403).json({ error: 'Forbidden: Admin access required' });
+    }
+
+    const { ip, reason, durationHours } = req.body;
+    
+    if (!ip) {
+      return res.status(400).json({ error: 'IP address is required' });
+    }
+
+    const blocked = await BlockedIP.blockIP(
+      ip, 
+      reason || 'Manually blocked by admin',
+      durationHours || null
+    );
+
+    return res.json({
+      success: true,
+      message: `IP ${ip} has been blocked`,
+      data: blocked
+    });
+  } catch (err) {
+    console.error('adminBlockIP error', err);
+    return res.status(500).json({ error: 'Unable to block IP' });
+  }
+}
+
+// ADMIN - Unblock an IP
+async function adminUnblockIP(req, res) {
+  try {
+    if (!isAdmin(req.user)) {
+      return res.status(403).json({ error: 'Forbidden: Admin access required' });
+    }
+
+    const { ip } = req.params;
+    
+    if (!ip) {
+      return res.status(400).json({ error: 'IP address is required' });
+    }
+
+    const result = await BlockedIP.unblockIP(ip);
+    
+    if (!result) {
+      return res.status(404).json({ error: 'IP not found in blocked list' });
+    }
+
+    return res.json({
+      success: true,
+      message: `IP ${ip} has been unblocked`
+    });
+  } catch (err) {
+    console.error('adminUnblockIP error', err);
+    return res.status(500).json({ error: 'Unable to unblock IP' });
+  }
+}
+
+// ADMIN - Get rate limit stats for an IP
+async function adminGetIPStats(req, res) {
+  try {
+    if (!isAdmin(req.user)) {
+      return res.status(403).json({ error: 'Forbidden: Admin access required' });
+    }
+
+    const { ip } = req.params;
+    
+    if (!ip) {
+      return res.status(400).json({ error: 'IP address is required' });
+    }
+
+    const stats = await ContactRateLimit.getStats(ip);
+    const blockStatus = await BlockedIP.isBlocked(ip);
+
+    return res.json({
+      success: true,
+      ip,
+      stats,
+      blocked: blockStatus
+    });
+  } catch (err) {
+    console.error('adminGetIPStats error', err);
+    return res.status(500).json({ error: 'Unable to get IP stats' });
+  }
+}
+
 module.exports = {
-  // User endpoints
+  // Public endpoint (no auth required)
   createContact,
+  
+  // User endpoints (auth required)
   getMyInquiries,
   getMyInquiry,
   deleteMyInquiry,
@@ -649,8 +839,13 @@ module.exports = {
   // Admin endpoints
   adminGetAllInquiries,
   adminGetInquiry,
-  adminCreateInquiry,
   adminUpdateInquiry,
   adminDeleteInquiry,
-  adminDeleteAllInquiries
+  adminDeleteAllInquiries,
+  
+  // Admin IP management
+  adminGetBlockedIPs,
+  adminBlockIP,
+  adminUnblockIP,
+  adminGetIPStats
 };
