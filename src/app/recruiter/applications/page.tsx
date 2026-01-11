@@ -4,9 +4,27 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
 
+interface Applicant {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface Job {
+  title: string;
+}
+
+interface Application {
+  _id: string;
+  applicant: Applicant;
+  job: Job;
+  status: 'pending' | 'interview' | 'offered' | 'rejected';
+  appliedAt: string;
+}
+
 export default function RecruiterApplications() {
   const router = useRouter();
-  const [applications, setApplications] = useState([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('pending');
 
@@ -26,7 +44,7 @@ export default function RecruiterApplications() {
     }
   };
 
-  const updateStatus = async (appId, status) => {
+  const updateStatus = async (appId: string, status: string) => {
     try {
       await api.put(`/recruiter/applications/${appId}/status`, { status });
       toast.success('Application updated');

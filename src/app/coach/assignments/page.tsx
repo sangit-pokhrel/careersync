@@ -5,10 +5,30 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
 
+interface Student {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface Assignment {
+  _id: string;
+  title: string;
+  description: string;
+  type: string;
+  difficulty: string;
+  dueDate: string;
+  points: number;
+  totalAssigned: number;
+  totalSubmitted: number;
+  totalReviewed: number;
+}
+
 export default function CoachAssignments() {
   const router = useRouter();
-  const [assignments, setAssignments] = useState([]);
-  const [eligibleStudents, setEligibleStudents] = useState([]);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [eligibleStudents, setEligibleStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -18,7 +38,7 @@ export default function CoachAssignments() {
     difficulty: 'medium',
     dueDate: '',
     points: 10,
-    studentIds: [],
+    studentIds: [] as string[],
     allowLateSubmission: false,
     requiresFile: true
   });
@@ -49,7 +69,7 @@ export default function CoachAssignments() {
     }
   };
 
-  const createAssignment = async (e) => {
+  const createAssignment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (formData.studentIds.length === 0) {
@@ -79,7 +99,7 @@ export default function CoachAssignments() {
     }
   };
 
-  const toggleStudent = (studentId) => {
+  const toggleStudent = (studentId: string) => {
     setFormData({
       ...formData,
       studentIds: formData.studentIds.includes(studentId)
@@ -209,7 +229,7 @@ export default function CoachAssignments() {
                 <label className="block font-bold mb-2">Description *</label>
                 <textarea
                   className="w-full border border-gray-300 rounded-xl p-3"
-                  rows="4"
+                  rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   required
@@ -262,7 +282,7 @@ export default function CoachAssignments() {
                     className="w-full border border-gray-300 rounded-xl p-3"
                     value={formData.points}
                     onChange={(e) => setFormData({ ...formData, points: parseInt(e.target.value) })}
-                    min="1"
+                    min={1}
                   />
                 </div>
               </div>

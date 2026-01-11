@@ -5,17 +5,65 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
 
+interface Student {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface Question {
+  _id: string;
+  question: string;
+  correctAnswer?: string;
+  points?: number;
+}
+
+interface InterviewRequest {
+  title: string;
+  questions: Question[];
+}
+
+interface Answer {
+  _id: string;
+  questionId: string;
+  questionType: 'mcq' | 'written';
+  answer: string;
+  isCorrect?: boolean;
+  coachScore?: number;
+  coachNotes?: string;
+}
+
+interface Submission {
+  _id: string;
+  student: Student;
+  interviewRequest: InterviewRequest;
+  mcqScore: number;
+  mcqCorrect: number;
+  mcqTotal: number;
+  percentage: number;
+  timeTaken: number;
+  submittedAt: string;
+  answers: Answer[];
+  coachFeedback?: string;
+}
+
+interface WrittenScore {
+  answerId: string;
+  points: number;
+  notes: string;
+}
+
 export default function ReviewSubmissions() {
   const router = useRouter();
-  const [submissions, setSubmissions] = useState([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('pending');
-  const [selectedSubmission, setSelectedSubmission] = useState(null);
+  const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [reviewing, setReviewing] = useState(false);
   const [reviewData, setReviewData] = useState({
     decision: '',
     feedback: '',
-    writtenScores: []
+    writtenScores: [] as WrittenScore[]
   });
 
   useEffect(() => {
@@ -35,15 +83,15 @@ export default function ReviewSubmissions() {
     }
   };
 
-  const viewSubmission = async (submissionId) => {
+  const viewSubmission = async (submissionId: string) => {
     try {
       const { data } = await api.get(`/coach/submissions/${submissionId}`);
       setSelectedSubmission(data.data);
       
       // Initialize written scores
       const writtenScores = data.data.answers
-        .filter(a => a.questionType === 'written')
-        .map(a => ({
+        .filter((a: Answer) => a.questionType === 'written')
+        .map((a: Answer) => ({
           answerId: a._id,
           points: a.coachScore || 0,
           notes: a.coachNotes || ''
@@ -61,6 +109,8 @@ export default function ReviewSubmissions() {
   };
 
   const submitReview = async () => {
+    if (!selectedSubmission) return;
+
     if (!reviewData.decision) {
       toast.error('Please select approve or reject');
       return;
@@ -88,7 +138,7 @@ export default function ReviewSubmissions() {
     }
   };
 
-  const updateWrittenScore = (answerId, field, value) => {
+  const updateWrittenScore = (answerId: string, field: keyof WrittenScore, value: string | number) => {
     setReviewData({
       ...reviewData,
       writtenScores: reviewData.writtenScores.map(score =>
@@ -255,7 +305,7 @@ export default function ReviewSubmissions() {
                                   className="w-full border border-gray-300 rounded-lg p-2"
                                   value={reviewData.writtenScores.find(s => s.answerId === answer._id)?.points || 0}
                                   onChange={(e) => updateWrittenScore(answer._id, 'points', parseInt(e.target.value))}
-                                  min="0"
+                                  min={0}
                                   max={question?.points || 1}
                                 />
                               </div>
@@ -285,7 +335,7 @@ export default function ReviewSubmissions() {
                     <label className="block font-bold mb-2">Feedback *</label>
                     <textarea
                       className="w-full border border-gray-300 rounded-xl p-3"
-                      rows="4"
+                      rows={4}
                       placeholder="Provide feedback to the student..."
                       value={reviewData.feedback}
                       onChange={(e) => setReviewData({ ...reviewData, feedback: e.target.value })}

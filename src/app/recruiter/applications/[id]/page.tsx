@@ -5,10 +5,30 @@ import { useRouter, useParams } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
 
+interface Applicant {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface Job {
+  title: string;
+  companyName: string;
+}
+
+interface Application {
+  _id: string;
+  applicant: Applicant;
+  job: Job;
+  status: 'pending' | 'interview' | 'offered' | 'rejected';
+  appliedAt: string;
+  coverLetter?: string;
+}
+
 export default function ApplicationDetailsPage() {
   const router = useRouter();
   const params = useParams();
-  const [application, setApplication] = useState<any>(null);
+  const [application, setApplication] = useState<Application | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +41,7 @@ export default function ApplicationDetailsPage() {
     try {
       const { data } = await api.get(`/recruiter/applications/${id}`);
       setApplication(data.data || data.application);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('Failed to load application');
       router.back();
     } finally {
@@ -34,7 +54,7 @@ export default function ApplicationDetailsPage() {
       await api.patch(`/recruiter/applications/${params.id}/status`, { status });
       toast.success('Status updated successfully');
       fetchApplication(params.id as string);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('Failed to update status');
     }
   };

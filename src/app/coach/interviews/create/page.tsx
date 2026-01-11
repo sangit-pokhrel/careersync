@@ -407,6 +407,7 @@
 //     </>
 //   );
 // }
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -414,13 +415,31 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
 
+interface Student {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isPremium: boolean;
+}
+
+interface Question {
+  id: number;
+  type: 'mcq' | 'written';
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  expectedLength: number;
+  points: number;
+}
+
 export default function CreateInterviewAssessment() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [loadingStudents, setLoadingStudents] = useState(false);
-  const [selectedStudents, setSelectedStudents] = useState([]); // Array of student IDs
-  const [selectedStudentsData, setSelectedStudentsData] = useState([]); // Array of full student objects
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [selectedStudentsData, setSelectedStudentsData] = useState<Student[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showStudentList, setShowStudentList] = useState(false);
 
@@ -430,7 +449,7 @@ export default function CreateInterviewAssessment() {
     assessmentType: 'both',
     timeLimit: 45,
     expiryDays: 7,
-    questions: []
+    questions: [] as Question[]
   });
 
   // Fetch students when search query changes (with debounce)
@@ -462,7 +481,7 @@ export default function CreateInterviewAssessment() {
       });
       
       const studentList = data.data?.users || data.users || data.data || data || [];
-      const premiumStudents = studentList.filter(student => student.isPremium === true);
+      const premiumStudents = studentList.filter((student: Student) => student.isPremium === true);
       
       setStudents(premiumStudents);
       
@@ -474,7 +493,7 @@ export default function CreateInterviewAssessment() {
     }
   };
 
-  const toggleStudentSelection = (student) => {
+  const toggleStudentSelection = (student: Student) => {
     setSelectedStudents(prev => {
       if (prev.includes(student._id)) {
         // Remove from selection
@@ -498,13 +517,13 @@ export default function CreateInterviewAssessment() {
     }
   };
 
-  const removeSelectedStudent = (studentId) => {
+  const removeSelectedStudent = (studentId: string) => {
     setSelectedStudents(prev => prev.filter(id => id !== studentId));
     setSelectedStudentsData(prev => prev.filter(s => s._id !== studentId));
   };
 
-  const addQuestion = (type) => {
-    const newQuestion = {
+  const addQuestion = (type: 'mcq' | 'written') => {
+    const newQuestion: Question = {
       id: Date.now(),
       type,
       question: '',
@@ -520,7 +539,7 @@ export default function CreateInterviewAssessment() {
     });
   };
 
-  const updateQuestion = (id, field, value) => {
+  const updateQuestion = (id: number, field: keyof Question, value: string | number) => {
     setFormData({
       ...formData,
       questions: formData.questions.map(q =>
@@ -529,7 +548,7 @@ export default function CreateInterviewAssessment() {
     });
   };
 
-  const updateOption = (questionId, optionIndex, value) => {
+  const updateOption = (questionId: number, optionIndex: number, value: string) => {
     setFormData({
       ...formData,
       questions: formData.questions.map(q =>
@@ -540,14 +559,14 @@ export default function CreateInterviewAssessment() {
     });
   };
 
-  const removeQuestion = (id) => {
+  const removeQuestion = (id: number) => {
     setFormData({
       ...formData,
       questions: formData.questions.filter(q => q.id !== id)
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Validation
@@ -593,22 +612,22 @@ export default function CreateInterviewAssessment() {
         title: formData.title,
         description: formData.description,
         assessmentType: formData.assessmentType,
-        timeLimit: parseInt(formData.timeLimit),
-        expiryDays: parseInt(formData.expiryDays),
+        timeLimit: parseInt(formData.timeLimit.toString()),
+        expiryDays: parseInt(formData.expiryDays.toString()),
         questions: formData.questions.map(q => ({
           type: q.type,
           question: q.question,
           options: q.type === 'mcq' ? q.options : undefined,
           correctAnswer: q.type === 'mcq' ? q.correctAnswer : undefined,
-          expectedLength: q.type === 'written' ? parseInt(q.expectedLength) : undefined,
-          points: parseInt(q.points)
+          expectedLength: q.type === 'written' ? parseInt(q.expectedLength.toString()) : undefined,
+          points: parseInt(q.points.toString())
         }))
       };
 
       // Send individual requests for each student
       let successCount = 0;
       let failCount = 0;
-      const failedStudents = [];
+      const failedStudents: string[] = [];
 
       for (const studentData of selectedStudentsData) {
         try {
@@ -622,7 +641,7 @@ export default function CreateInterviewAssessment() {
 
           // Create payload with specific studentId
           const payload = {
-            studentId: studentData._id, // Use the actual MongoDB ObjectId
+            studentId: studentData._id,
             ...basePayload
           };
 
@@ -719,7 +738,7 @@ export default function CreateInterviewAssessment() {
             <div className="mb-4">
               {students.length === 0 ? (
                 <div className="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-                  <p className="text-gray-500">No premium students found matching "{searchQuery}"</p>
+                  <p className="text-gray-500">No premium students found matching &quot;{searchQuery}&quot;</p>
                   <p className="text-sm text-gray-400 mt-2">Only premium job seekers can receive assessments</p>
                 </div>
               ) : (
@@ -804,7 +823,7 @@ export default function CreateInterviewAssessment() {
           </div>
         </div>
 
-        {/* Assessment Details - SAME AS BEFORE */}
+        {/* Assessment Details */}
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
           <h3 className="text-lg font-bold mb-6">Assessment Details</h3>
           
@@ -840,9 +859,9 @@ export default function CreateInterviewAssessment() {
                 type="number"
                 className="w-full border border-gray-300 rounded-xl p-3"
                 value={formData.timeLimit}
-                onChange={(e) => setFormData({ ...formData, timeLimit: e.target.value })}
-                min="15"
-                max="180"
+                onChange={(e) => setFormData({ ...formData, timeLimit: parseInt(e.target.value) })}
+                min={15}
+                max={180}
                 required
               />
             </div>
@@ -853,9 +872,9 @@ export default function CreateInterviewAssessment() {
                 type="number"
                 className="w-full border border-gray-300 rounded-xl p-3"
                 value={formData.expiryDays}
-                onChange={(e) => setFormData({ ...formData, expiryDays: e.target.value })}
-                min="1"
-                max="30"
+                onChange={(e) => setFormData({ ...formData, expiryDays: parseInt(e.target.value) })}
+                min={1}
+                max={30}
                 required
               />
             </div>
@@ -865,7 +884,7 @@ export default function CreateInterviewAssessment() {
             <label className="block text-sm font-bold mb-2">Description</label>
             <textarea
               className="w-full border border-gray-300 rounded-xl p-3"
-              rows="3"
+              rows={3}
               placeholder="Additional instructions for the students..."
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -873,7 +892,7 @@ export default function CreateInterviewAssessment() {
           </div>
         </div>
 
-        {/* Questions Section - SAME AS BEFORE (keeping it short for space) */}
+        {/* Questions Section */}
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold">Questions ({formData.questions.length})</h3>
@@ -902,7 +921,7 @@ export default function CreateInterviewAssessment() {
           {formData.questions.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
               <p className="text-gray-500 mb-4">No questions added yet</p>
-              <p className="text-sm text-gray-400">Click "Add MCQ" or "Add Written" to create questions</p>
+              <p className="text-sm text-gray-400">Click &quot;Add MCQ&quot; or &quot;Add Written&quot; to create questions</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -925,7 +944,7 @@ export default function CreateInterviewAssessment() {
                     <label className="block text-sm font-bold mb-2">Question Text *</label>
                     <textarea
                       className="w-full border border-gray-300 rounded-lg p-3"
-                      rows="2"
+                      rows={2}
                       placeholder="Enter your question..."
                       value={question.question}
                       onChange={(e) => updateQuestion(question.id, 'question', e.target.value)}
@@ -975,8 +994,8 @@ export default function CreateInterviewAssessment() {
                         className="w-40 border border-gray-300 rounded-lg p-2"
                         value={question.expectedLength}
                         onChange={(e) => updateQuestion(question.id, 'expectedLength', parseInt(e.target.value) || 200)}
-                        min="50"
-                        max="1000"
+                        min={50}
+                        max={1000}
                       />
                     </div>
                   )}
@@ -988,8 +1007,8 @@ export default function CreateInterviewAssessment() {
                       className="w-24 border border-gray-300 rounded-lg p-2"
                       value={question.points}
                       onChange={(e) => updateQuestion(question.id, 'points', parseInt(e.target.value) || 1)}
-                      min="1"
-                      max="10"
+                      min={1}
+                      max={10}
                     />
                   </div>
                 </div>

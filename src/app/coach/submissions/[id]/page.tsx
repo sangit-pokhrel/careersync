@@ -4,7 +4,26 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
-import type { Submission } from '@/types';
+
+interface Student {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface InterviewRequest {
+  title?: string;
+  totalPoints?: number;
+}
+
+interface Submission {
+  _id: string;
+  student: Student | string;
+  interviewRequest?: InterviewRequest;
+  mcqScore: number;
+  writtenScore: number;
+  percentage: number;
+}
 
 export default function SubmissionDetailsPage() {
   const router = useRouter();
@@ -23,7 +42,7 @@ export default function SubmissionDetailsPage() {
     try {
       const { data } = await api.get(`/coach/submissions/${id}`);
       setSubmission(data.data || data.submission);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('Failed to load submission');
       router.back();
     } finally {
@@ -39,7 +58,7 @@ export default function SubmissionDetailsPage() {
       });
       toast.success(`Submission ${status}`);
       router.back();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('Failed to review submission');
     }
   };

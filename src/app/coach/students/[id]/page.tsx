@@ -4,7 +4,15 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
-import type { Student } from '@/types';
+
+interface Student {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+  status?: string;
+}
 
 export default function StudentDetailsPage() {
   const router = useRouter();
@@ -22,7 +30,7 @@ export default function StudentDetailsPage() {
     try {
       const { data } = await api.get(`/coach/students/${id}`);
       setStudent(data.data || data.student);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('Failed to load student details');
       router.back();
     } finally {

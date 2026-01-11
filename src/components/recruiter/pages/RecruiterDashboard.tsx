@@ -5,23 +5,67 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
 
+// Type definitions
+interface RecruiterStats {
+  totalJobs: number;
+  activeJobs: number;
+  totalApplications: number;
+  pendingApplications: number;
+  interviewsScheduled: number;
+}
+
+interface Applicant {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface Job {
+  _id: string;
+  title: string;
+  description?: string;
+  location?: string;
+  salary?: string;
+}
+
+interface Application {
+  _id: string;
+  applicant: Applicant;
+  job: Job;
+  appliedAt: string;
+  status: 'pending' | 'interview' | 'offered' | 'rejected';
+}
+
 export default function RecruiterDashboard() {
   const router = useRouter();
-  const [stats, setStats] = useState(null);
-  const [recentApplications, setRecentApplications] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<RecruiterStats>({
+    totalJobs: 0,
+    activeJobs: 0,
+    totalApplications: 0,
+    pendingApplications: 0,
+    interviewsScheduled: 0
+  });
+  const [recentApplications, setRecentApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchDashboard();
   }, []);
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = async (): Promise<void> => {
     try {
       setLoading(true);
       const { data } = await api.get('/recruiter/dashboard');
       
-      setStats(data.data.stats);
-      setRecentApplications(data.data.recentApplications);
+      setStats(data.data.stats || {
+        totalJobs: 0,
+        activeJobs: 0,
+        totalApplications: 0,
+        pendingApplications: 0,
+        interviewsScheduled: 0
+      });
+      setRecentApplications(data.data.recentApplications || []);
     } catch (error) {
       console.error('Error:', error);
       toast.error('Failed to load dashboard');
@@ -53,7 +97,7 @@ export default function RecruiterDashboard() {
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-2">
             <span className="text-4xl">💼</span>
-            <span className="text-3xl font-bold">{stats?.totalJobs || 0}</span>
+            <span className="text-3xl font-bold">{stats.totalJobs || 0}</span>
           </div>
           <p className="text-blue-100 text-sm">Total Jobs</p>
         </div>
@@ -61,7 +105,7 @@ export default function RecruiterDashboard() {
         <div className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-2">
             <span className="text-4xl">✅</span>
-            <span className="text-3xl font-bold">{stats?.activeJobs || 0}</span>
+            <span className="text-3xl font-bold">{stats.activeJobs || 0}</span>
           </div>
           <p className="text-green-100 text-sm">Active Jobs</p>
         </div>
@@ -69,7 +113,7 @@ export default function RecruiterDashboard() {
         <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-2">
             <span className="text-4xl">📝</span>
-            <span className="text-3xl font-bold">{stats?.totalApplications || 0}</span>
+            <span className="text-3xl font-bold">{stats.totalApplications || 0}</span>
           </div>
           <p className="text-purple-100 text-sm">Total Applications</p>
         </div>
@@ -77,7 +121,7 @@ export default function RecruiterDashboard() {
         <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-2xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-2">
             <span className="text-4xl">⏳</span>
-            <span className="text-3xl font-bold">{stats?.pendingApplications || 0}</span>
+            <span className="text-3xl font-bold">{stats.pendingApplications || 0}</span>
           </div>
           <p className="text-orange-100 text-sm">Pending Review</p>
         </div>
@@ -85,7 +129,7 @@ export default function RecruiterDashboard() {
         <div className="bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-2xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-2">
             <span className="text-4xl">📹</span>
-            <span className="text-3xl font-bold">{stats?.interviewsScheduled || 0}</span>
+            <span className="text-3xl font-bold">{stats.interviewsScheduled || 0}</span>
           </div>
           <p className="text-pink-100 text-sm">Interviews</p>
         </div>
@@ -145,7 +189,7 @@ export default function RecruiterDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {recentApplications.map(app => (
+                {recentApplications.map((app: Application) => (
                   <tr key={app._id} className="border-t border-gray-200">
                     <td className="p-3">
                       <div className="font-bold">{app.applicant?.firstName} {app.applicant?.lastName}</div>

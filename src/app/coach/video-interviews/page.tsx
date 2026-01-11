@@ -5,9 +5,31 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
 
+interface Student {
+  firstName: string;
+  lastName: string;
+}
+
+interface Submission {
+  percentage: number;
+}
+
+interface VideoInterview {
+  _id: string;
+  student: Student;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  scheduledDate: string;
+  scheduledTime: string;
+  duration: number;
+  submission?: Submission;
+  meetingLink?: string;
+  result?: 'pass' | 'fail';
+  resultNotes?: string;
+}
+
 export default function CoachVideoInterviews() {
   const router = useRouter();
-  const [interviews, setInterviews] = useState([]);
+  const [interviews, setInterviews] = useState<VideoInterview[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('scheduled');
 
@@ -28,7 +50,7 @@ export default function CoachVideoInterviews() {
     }
   };
 
-  const cancelInterview = async (interviewId) => {
+  const cancelInterview = async (interviewId: string) => {
     if (!confirm('Are you sure you want to cancel this interview?')) return;
 
     try {
@@ -43,7 +65,7 @@ export default function CoachVideoInterviews() {
     }
   };
 
-  const markComplete = async (interviewId, result) => {
+  const markComplete = async (interviewId: string, result: 'pass' | 'fail') => {
     try {
       await api.put(`/coach/video-interviews/${interviewId}`, {
         status: 'completed',

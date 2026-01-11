@@ -68,7 +68,7 @@ export default function CoachSettings() {
           <label className="block font-bold mb-2">Bio</label>
           <textarea
             className="w-full border border-gray-300 rounded-xl p-3"
-            rows="4"
+            rows={4}
             value={profile.bio}
             onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
           />

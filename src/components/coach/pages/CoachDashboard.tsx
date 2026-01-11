@@ -3,7 +3,54 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/baseapi';
-import type { DashboardStats, Submission, VideoInterview } from '@/app/types/index';
+
+// Type definitions
+interface User {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: 'student' | 'coach';
+}
+
+interface Student {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface InterviewRequest {
+  _id: string;
+  title: string;
+  description?: string;
+  deadline?: string;
+}
+
+interface Submission {
+  _id: string;
+  student: Student;
+  interviewRequest: InterviewRequest;
+  percentage: number;
+  reviewStatus: 'pending' | 'approved' | 'rejected';
+  submittedAt: string;
+}
+
+interface VideoInterview {
+  _id: string;
+  student: Student;
+  scheduledDate: string;
+  scheduledTime: string;
+  duration: number;
+  status?: string;
+}
+
+interface DashboardStats {
+  totalStudents: number;
+  totalInterviews: number;
+  pendingSubmissions: number;
+  upcomingInterviews: number;
+}
 
 export default function CoachDashboard() {
   const router = useRouter();
@@ -26,7 +73,12 @@ export default function CoachDashboard() {
       setLoading(true);
       const { data } = await api.get('/coach/dashboard');
       
-      setStats(data.data.stats || {});
+      setStats(data.data.stats || {
+        totalStudents: 0,
+        totalInterviews: 0,
+        pendingSubmissions: 0,
+        upcomingInterviews: 0
+      });
       setRecentSubmissions(data.data.recentSubmissions || []);
       setUpcomingInterviews(data.data.upcomingInterviews || []);
     } catch (error) {

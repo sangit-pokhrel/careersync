@@ -5,10 +5,25 @@ import { useRouter, useParams } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
 
+interface Student {
+  firstName: string;
+  lastName: string;
+}
+
+interface VideoInterview {
+  _id: string;
+  student: Student;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  scheduledDate: string;
+  scheduledTime: string;
+  duration: number;
+  meetingLink?: string;
+}
+
 export default function VideoInterviewDetailsPage() {
   const router = useRouter();
   const params = useParams();
-  const [interview, setInterview] = useState<any>(null);
+  const [interview, setInterview] = useState<VideoInterview | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +36,7 @@ export default function VideoInterviewDetailsPage() {
     try {
       const { data } = await api.get(`/coach/video-interviews/${id}`);
       setInterview(data.data || data.interview);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('Failed to load interview');
       router.back();
     } finally {

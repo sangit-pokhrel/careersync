@@ -5,10 +5,26 @@ import { useRouter, useParams } from 'next/navigation';
 import api from '@/lib/baseapi';
 import { toast } from 'react-toastify';
 
+interface Job {
+  _id: string;
+  title: string;
+  companyName: string;
+  location: string;
+  status: 'active' | 'closed' | 'draft';
+  description: string;
+  requiredSkills?: string[];
+  jobType: string;
+  workMode: string;
+  experienceLevel: string;
+  applicationCount?: number;
+  salaryMin?: number;
+  salaryMax?: number;
+}
+
 export default function JobDetailsPage() {
   const router = useRouter();
   const params = useParams();
-  const [job, setJob] = useState<any>(null);
+  const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +37,7 @@ export default function JobDetailsPage() {
     try {
       const { data } = await api.get(`/recruiter/jobs/${id}`);
       setJob(data.data || data.job);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('Failed to load job');
       router.back();
     } finally {

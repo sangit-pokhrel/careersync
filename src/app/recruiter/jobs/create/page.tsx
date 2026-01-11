@@ -30,7 +30,7 @@ export default function RecruiterPostJob() {
     isPublic: true
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -49,7 +49,7 @@ export default function RecruiterPostJob() {
       toast.success('Job posted successfully!');
       router.push('/recruiter/jobs');
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
       toast.error(error.response?.data?.error || 'Failed to post job');
     } finally {
@@ -100,7 +100,7 @@ export default function RecruiterPostJob() {
             <label className="block font-bold mb-2">Job Description *</label>
             <textarea
               className="w-full border border-gray-300 rounded-xl p-3"
-              rows="6"
+              rows={6}
               placeholder="Describe the role, responsibilities, and requirements..."
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -142,8 +142,8 @@ export default function RecruiterPostJob() {
               onChange={(e) => setFormData({ ...formData, education: e.target.value })}
             >
               <option value="high-school">High School</option>
-              <option value="bachelors">Bachelor's Degree</option>
-              <option value="masters">Master's Degree</option>
+              <option value="bachelors">Bachelor&apos;s Degree</option>
+              <option value="masters">Master&apos;s Degree</option>
               <option value="phd">PhD</option>
               <option value="any">Any</option>
             </select>
@@ -246,7 +246,7 @@ export default function RecruiterPostJob() {
               className="w-full border border-gray-300 rounded-xl p-3"
               value={formData.maxApplicants}
               onChange={(e) => setFormData({ ...formData, maxApplicants: parseInt(e.target.value) })}
-              min="1"
+              min={1}
             />
           </div>
 
@@ -254,7 +254,7 @@ export default function RecruiterPostJob() {
             <label className="block font-bold mb-2">Benefits (one per line)</label>
             <textarea
               className="w-full border border-gray-300 rounded-xl p-3"
-              rows="4"
+              rows={4}
               placeholder="Health insurance
 Flexible hours
 Remote work
@@ -268,7 +268,7 @@ Professional development"
             <label className="block font-bold mb-2">Responsibilities (one per line)</label>
             <textarea
               className="w-full border border-gray-300 rounded-xl p-3"
-              rows="4"
+              rows={4}
               placeholder="Develop React applications
 Write clean, maintainable code
 Collaborate with team
