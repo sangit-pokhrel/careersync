@@ -2,7 +2,7 @@
 // // const sanitizeHtml = require('sanitize-html');
 // // const { v4: uuidv4 } = require('uuid');
 // // const SupportTicket = require('../models/supportTicket.model');
-// // const supportMessageModel = require('../models/supportMessageModel.model');
+// // const SupportMessage = require('../models/supportmessage.model');
 
 // // async function createTicket(req, res) {
 // //   try {
@@ -26,7 +26,7 @@
 
 // //     // create an initial message for the ticket
 // //     if (description) {
-// //       await supportMessageModel.create({
+// //       await SupportMessage.create({
 // //         ticket: ticket._id,
 // //         sender: req.user._id,
 // //         message: description,
@@ -61,7 +61,7 @@
 // //       return res.status(403).json({ error: 'Forbidden' });
 // //     }
 
-// //     const messages = await supportMessageModel.find({ ticket: ticket._id }).populate('sender','fullName email');
+// //     const messages = await SupportMessage.find({ ticket: ticket._id }).populate('sender','fullName email');
 // //     return res.json({ ticket, messages });
 // //   } catch (err) {
 // //     console.error(err);
@@ -82,7 +82,7 @@
 // //     const messageText = sanitizeHtml(req.body.message || '', { allowedTags: [], allowedAttributes: {} });
 // //     const attachmentUrl = req.body.attachmentUrl;
 
-// //     const message = await supportMessageModel.create({
+// //     const message = await SupportMessage.create({
 // //       ticket: ticket._id,
 // //       sender: req.user._id,
 // //       message: messageText,
@@ -104,7 +104,7 @@
 // // module.exports = { createTicket, listTickets, getTicket, addMessage };
 // const sanitizeHtml = require('sanitize-html');
 // const SupportTicket = require('../models/supportTicket.model');
-// const supportMessageModel = require('../models/supportMessageModel.model');
+// const SupportMessage = require('../models/supportMessage.model');
 // const User = require('../models/user.model');
 // const { uploadBufferToS3 } = require('../../utils/storageS3');
 // const ticketQueue = require('../queues/ticketQueue');
@@ -166,7 +166,7 @@
 
 //     await ticket.populate('user', 'email firstName lastName role');
 
-//     await supportMessageModel.create({
+//     await SupportMessage.create({
 //       ticket: ticket._id,
 //       sender: req.user._id,
 //       senderRole: req.user.role,
@@ -353,7 +353,7 @@
 //       messages = await getTicketMessages(ticket._id);
 //     } catch (cacheError) {
 //       console.warn('Message cache error, fetching from DB:', cacheError.message);
-//       messages = await supportMessageModel.find({ ticket: ticket._id })
+//       messages = await SupportMessage.find({ ticket: ticket._id })
 //         .populate('sender', 'email firstName lastName role')
 //         .sort({ createdAt: 1 });
 //     }
@@ -438,7 +438,7 @@
 //       }
 //     }
 
-//     const message = await supportMessageModel.create({
+//     const message = await SupportMessage.create({
 //       ticket: ticket._id,
 //       sender: req.user._id,
 //       senderRole: req.user.role,
@@ -643,7 +643,7 @@
 //     ticket.closedAt = null;
 //     await ticket.save();
 
-//     await supportMessageModel.create({
+//     await SupportMessage.create({
 //       ticket: ticket._id,
 //       sender: req.user._id,
 //       senderRole: req.user.role,
@@ -802,7 +802,7 @@
 //       });
 //     }
 
-//     await supportMessageModel.deleteMany({ ticket: ticket._id });
+//     await SupportMessage.deleteMany({ ticket: ticket._id });
 //     await ticket.deleteOne();
 
 //     invalidateTicketCache(ticket._id);
@@ -2086,7 +2086,7 @@
 
 const sanitizeHtml = require('sanitize-html');
 const SupportTicket = require('../models/supportTicket.model');
-
+const SupportMessage = require('../models/supportMessage.model');
 const User = require('../models/user.model');
 const { uploadBufferToS3 } = require('../../utils/storageS3');
 const ticketQueue = require('../queues/ticketQueue');
@@ -2104,7 +2104,6 @@ const {
   notifyStaffNewTicket,
   notifyTicketAssignment
 } = require('../sockets/ticket.sockets');
-const supportMessageModelModel = require('../models/supportMessageModel.model');
 
 // ==================== USER ENDPOINTS ====================
 
@@ -2149,7 +2148,7 @@ async function createTicket(req, res) {
 
     await ticket.populate('user', 'email firstName lastName role');
 
-    await supportMessageModel.create({
+    await SupportMessage.create({
       ticket: ticket._id,
       sender: req.user._id,
       senderRole: req.user.role,
@@ -2286,7 +2285,7 @@ async function getTicket(req, res) {
       messages = await getTicketMessages(ticket._id);
     } catch (cacheError) {
       console.warn('Message cache error, fetching from DB:', cacheError.message);
-      messages = await supportMessageModel.find({ ticket: ticket._id })
+      messages = await SupportMessage.find({ ticket: ticket._id })
         .populate('sender', 'email firstName lastName role')
         .sort({ createdAt: 1 });
     }
@@ -2370,7 +2369,7 @@ async function addMessage(req, res) {
       }
     }
 
-    const message = await supportMessageModel.create({
+    const message = await SupportMessage.create({
       ticket: ticket._id,
       sender: req.user._id,
       senderRole: req.user.role,
@@ -2570,7 +2569,7 @@ async function reopenTicket(req, res) {
     ticket.closedAt = null;
     await ticket.save();
 
-    await supportMessageModelModel.create({
+    await SupportMessage.create({
       ticket: ticket._id,
       sender: req.user._id,
       senderRole: req.user.role,
@@ -2764,7 +2763,7 @@ async function deleteTicket(req, res) {
       });
     }
 
-    await supportMessageModel.deleteMany({ ticket: ticket._id });
+    await SupportMessage.deleteMany({ ticket: ticket._id });
     await ticket.deleteOne();
 
     invalidateTicketCache(ticket._id);
