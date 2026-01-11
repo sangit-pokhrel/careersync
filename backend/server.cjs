@@ -1,11 +1,12 @@
 
+
 // const dotenv = require("dotenv");
 // dotenv.config();
 
 // const http = require("http");
 // const socketIo = require("socket.io");
 // const app = require("./src/app.js");
-// const { connectDB, disconnectDB } = require("./src/config/db.js");
+// const { connectDB, disconnectDB } = require("./src/config/db.cjs");
 
 // const PORT = parseInt(process.env.PORT, 10) || 5000;
 // const MONGO_URI = process.env.MONGO_URI;
@@ -46,7 +47,6 @@
 //     io.on('connection', (socket) => {
 //       console.log(`✅ Client connected: ${socket.id}`);
 
-//       // CV Analysis subscription
 //       socket.on('subscribe-analysis', (analysisId) => {
 //         socket.join(`analysis-${analysisId}`);
 //         console.log(`📡 Client ${socket.id} subscribed to analysis: ${analysisId}`);
@@ -72,28 +72,40 @@
 //     global.io = io;
 //     console.log("✅ Socket.IO ready");
 
-//     // 4. Setup Bull Queue Worker
-//     console.log("🔧 Setting up CV Analysis Queue...");
+//     // 4. Setup Bull Queue Workers
+//     console.log("🔧 Setting up Queue Workers...");
+    
+//     // CV Analysis Queue
 //     let cvQueue;
 //     try {
 //       cvQueue = require("./src/queues/cvQueus");
 //       const processCVAnalysis = require("./src/workers/cvWorkers");
-
 //       cvQueue.process("analyze-cv", 1, processCVAnalysis);
-//       console.log("✅ CV Analysis Worker started (processing 1 job at a time)");
+//       console.log("CV Analysis Worker started");
 //     } catch (queueError) {
-//       console.warn("⚠️  CV Analysis Queue could not start:", queueError.message);
-//       console.warn("⚠️  CV analysis feature will be disabled");
+//       console.warn("CV Analysis Queue could not start:", queueError.message);
 //       cvQueue = null;
 //     }
 
+//     // Ticket Email Queue
+//     let ticketQueue;
+//     try {
+//       ticketQueue = require("./src/queues/ticketQueue");
+//       const processTicketEmail = require("./src/workers/ticketWorker");
+//       ticketQueue.process("send-email", 3, processTicketEmail); // Process 3 emails concurrently
+//       console.log("Ticket Email Worker started");
+//     } catch (queueError) {
+//       console.warn("Ticket Email Queue could not start:", queueError.message);
+//       ticketQueue = null;
+//     }
+
 //     // 5. Start Server
-//     server.listen(PORT, () => {
-//       console.log(`✅ Server listening on port ${PORT} (pid ${process.pid})`);
-//       console.log(`\n🚀 API Ready at: http://localhost:${PORT}/api/v1`);
-//       console.log(`📊 Health Check: http://localhost:${PORT}/health`);
-//       console.log(`🔌 WebSocket: ws://localhost:${PORT}`);
-//       console.log(`🎫 Ticket Socket: ws://localhost:${PORT}/tickets\n`);
+//     server.listen(PORT,'0.0.0.0', () => {
+//       console.log(`Server listening on port ${PORT} (pid ${process.pid})`);
+//       console.log(`API Ready at: http://localhost:${PORT}/api/v1`);
+//       console.log(`Health Check: http://localhost:${PORT}/health`);
+//       console.log(`WebSocket: ws://localhost:${PORT}`);
+//       console.log(`Ticket Socket: ws://localhost:${PORT}/tickets\n`);
 //     });
 
 //     // 6. Graceful Shutdown
@@ -115,11 +127,17 @@
 //             console.log("✅ Socket.IO closed");
 //           }
 
-//           // Close Bull Queue
+//           // Close Bull Queues
 //           if (cvQueue) {
 //             console.log("🔄 Closing CV Analysis Queue...");
 //             await cvQueue.close();
-//             console.log("✅ Queue closed");
+//             console.log("✅ CV Queue closed");
+//           }
+
+//           if (ticketQueue) {
+//             console.log("🔄 Closing Ticket Email Queue...");
+//             await ticketQueue.close();
+//             console.log("✅ Ticket Queue closed");
 //           }
 
 //           // Close Redis (ticket service)
@@ -179,6 +197,7 @@
 // start();
 
 // module.exports = start;
+
 
 
 const dotenv = require("dotenv");
@@ -260,11 +279,15 @@ async function start() {
     let cvQueue;
     try {
       cvQueue = require("./src/queues/cvQueus");
-      const processCVAnalysis = require("./src/workers/cvWorkers");
-      cvQueue.process("analyze-cv", 1, processCVAnalysis);
-      console.log("CV Analysis Worker started");
+      if (cvQueue) {
+        const processCVAnalysis = require("./src/workers/cvWorkers");
+        cvQueue.process("analyze-cv", 1, processCVAnalysis);
+        console.log("✅ CV Analysis Worker started");
+      } else {
+        console.log("⚠️ CV Analysis Queue disabled");
+      }
     } catch (queueError) {
-      console.warn("CV Analysis Queue could not start:", queueError.message);
+      console.warn("⚠️ CV Analysis Queue could not start:", queueError.message);
       cvQueue = null;
     }
 
@@ -272,11 +295,15 @@ async function start() {
     let ticketQueue;
     try {
       ticketQueue = require("./src/queues/ticketQueue");
-      const processTicketEmail = require("./src/workers/ticketWorker");
-      ticketQueue.process("send-email", 3, processTicketEmail); // Process 3 emails concurrently
-      console.log("Ticket Email Worker started");
+      if (ticketQueue) {
+        const processTicketEmail = require("./src/workers/ticketWorker");
+        ticketQueue.process("send-email", 3, processTicketEmail); // Process 3 emails concurrently
+        console.log("✅ Ticket Email Worker started");
+      } else {
+        console.log("⚠️ Ticket Email Queue disabled");
+      }
     } catch (queueError) {
-      console.warn("Ticket Email Queue could not start:", queueError.message);
+      console.warn("⚠️ Ticket Email Queue could not start:", queueError.message);
       ticketQueue = null;
     }
 
