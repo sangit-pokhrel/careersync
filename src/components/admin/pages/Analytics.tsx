@@ -363,24 +363,35 @@
 // }
 
 
+
+
+
+
+
 'use client';
 
 import { useState, useEffect } from 'react';
-import api from '@/lib/baseapi';
-import Link from 'next/link';
+import Cookies from 'js-cookie';
 
 interface CVAnalysis {
-  id: number;
-  userId: number;
-  userName: string;
-  userEmail: string;
-  fileName: string;
-  analysisDate: string;
-  score: number;
-  strengths: string[];
-  weaknesses: string[];
-  recommendations: number;
-  appliedJobs: number;
+  _id: string;
+  user: {
+    _id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+  cvFileUrl: string;
+  analysisResult?: {
+    overallScore: number;
+    strengths: string[];
+    weaknesses: string[];
+    recommendations: string[];
+  };
+  overallScore: number;
+  status: string;
+  createdAt: string;
+  analysisDate?: string;
 }
 
 export default function AnalyticsManagement() {
@@ -389,9 +400,10 @@ export default function AnalyticsManagement() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState<keyof CVAnalysis>('analysisDate');
+  const [sortField, setSortField] = useState<'createdAt' | 'overallScore' | '_id'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [scoreFilter, setScoreFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   
   const itemsPerPage = 20;
 
@@ -401,37 +413,87 @@ export default function AnalyticsManagement() {
 
   useEffect(() => {
     filterAndSortAnalyses();
-  }, [searchQuery, analyses, sortField, sortOrder, scoreFilter]);
-
-  // const fetchAnalyses = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const { data } = await api.get('/cv/admin/analyses');
-  //     setAnalyses(data.analyses);
-  //   } catch (error) {
-  //     console.error('Error fetching analyses:', error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
+  }, [searchQuery, analyses, sortField, sortOrder, scoreFilter, statusFilter]);
 
   const fetchAnalyses = async () => {
-  try {
-    setLoading(true);
-    const { data } = await api.get('/cv/admin/analyses');
+    try {
+      setLoading(true);
+      
+      // Get accessToken from cookies using js-cookie
+      const accessToken = Cookies.get('accessToken');
 
-    setAnalyses(Array.isArray(data?.analyses) ? data.analyses : []);
+      if (!accessToken) {
+        console.error('No access token found');
+        alert('Please login to access analytics');
+        window.location.href = '/login';
+        return;
+      }
 
-    
-  } catch (error) {
-    console.error('Error fetching analyses:', error);
-    setAnalyses([]);
-  } finally {
-    setLoading(false);
-  }
-};
+      // Using the actual API endpoint from your network tab with authentication
+      const response = await fetch('https://amused-celinka-nothingname-3b1ecdef.koyeb.app/api/v1/cv/admin/analyses', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        },
+        credentials: 'include'
+      });
 
+      if (response.status === 401) {
+        alert('Session expired. Please login again.');
+        Cookies.remove('accessToken');
+        Cookies.remove('refreshToken');
+        window.location.href = '/login';
+        return;
+      }
+
+      const result = await response.json();
+      
+      console.log('API Response:', result); // Debug log
+      
+      if (result.success && result.data) {
+        let allAnalyses: CVAnalysis[] = [];
+        
+        // Handle the mixed data structure
+        result.data.forEach((item: any) => {
+          if (item.cvAnalyses && Array.isArray(item.cvAnalyses)) {
+            // This is the seed data object - extract the embedded cvAnalyses
+            const seedAnalyses = item.cvAnalyses.map((seedItem: any) => ({
+              _id: `seed-${seedItem.id}`,
+              user: {
+                _id: `user-${seedItem.userId}`,
+                email: `user${seedItem.userId}@example.com`,
+                firstName: `User`,
+                lastName: `${seedItem.userId}`
+              },
+              cvFileUrl: seedItem.fileName,
+              analysisResult: {
+                overallScore: seedItem.score,
+                strengths: seedItem.strengths,
+                weaknesses: seedItem.weaknesses,
+                recommendations: []
+              },
+              overallScore: seedItem.score,
+              status: 'done',
+              createdAt: seedItem.analysisDate,
+              analysisDate: seedItem.analysisDate
+            }));
+            allAnalyses = [...allAnalyses, ...seedAnalyses];
+          } else if (item._id && item.cvFileUrl) {
+            // This is a real CV analysis object
+            allAnalyses.push(item);
+          }
+        });
+        
+        console.log('Processed analyses:', allAnalyses.length);
+        setAnalyses(allAnalyses);
+      }
+    } catch (error) {
+      console.error('Error fetching analyses:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filterAndSortAnalyses = () => {
     let filtered = [...analyses];
@@ -439,36 +501,43 @@ export default function AnalyticsManagement() {
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(analysis => 
-        analysis.id.toString().includes(query) ||
-        analysis.userName.toLowerCase().includes(query) ||
-        analysis.userEmail.toLowerCase().includes(query) ||
-        analysis.fileName.toLowerCase().includes(query)
-      );
+      filtered = filtered.filter(analysis => {
+        const userName = analysis.user 
+          ? `${analysis.user.firstName} ${analysis.user.lastName}`.toLowerCase()
+          : '';
+        const userEmail = analysis.user?.email?.toLowerCase() || '';
+        const id = analysis._id.toLowerCase();
+        
+        return id.includes(query) || userName.includes(query) || userEmail.includes(query);
+      });
+    }
+
+    // Status filter
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(a => a.status === statusFilter);
     }
 
     // Score filter
     if (scoreFilter !== 'all') {
       if (scoreFilter === 'excellent') {
-        filtered = filtered.filter(a => a.score >= 85);
+        filtered = filtered.filter(a => a.overallScore >= 85);
       } else if (scoreFilter === 'good') {
-        filtered = filtered.filter(a => a.score >= 75 && a.score < 85);
+        filtered = filtered.filter(a => a.overallScore >= 75 && a.overallScore < 85);
       } else if (scoreFilter === 'fair') {
-        filtered = filtered.filter(a => a.score >= 65 && a.score < 75);
+        filtered = filtered.filter(a => a.overallScore >= 65 && a.overallScore < 75);
       } else if (scoreFilter === 'poor') {
-        filtered = filtered.filter(a => a.score < 65);
+        filtered = filtered.filter(a => a.overallScore < 65);
       }
     }
 
     // Sort
     filtered.sort((a, b) => {
-      let aValue = a[sortField];
-      let bValue = b[sortField];
+      let aValue: any = a[sortField];
+      let bValue: any = b[sortField];
 
-      // Handle date sorting
-      if (sortField === 'analysisDate') {
-        aValue = new Date(aValue as string).getTime();
-        bValue = new Date(bValue as string).getTime();
+      if (sortField === 'createdAt') {
+        aValue = new Date(aValue).getTime();
+        bValue = new Date(bValue).getTime();
       }
 
       if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
@@ -477,10 +546,10 @@ export default function AnalyticsManagement() {
     });
 
     setFilteredAnalyses(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   };
 
-  const handleSort = (field: keyof CVAnalysis) => {
+  const handleSort = (field: 'createdAt' | 'overallScore' | '_id') => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
@@ -503,6 +572,16 @@ export default function AnalyticsManagement() {
     return { label: 'Needs Work', icon: '⚠️' };
   };
 
+  const getStatusBadge = (status: string) => {
+    const badges: Record<string, { label: string; color: string }> = {
+      done: { label: 'Done', color: 'bg-green-100 text-green-800' },
+      queued: { label: 'Queued', color: 'bg-yellow-100 text-yellow-800' },
+      processing: { label: 'Processing', color: 'bg-blue-100 text-blue-800' },
+      failed: { label: 'Failed', color: 'bg-red-100 text-red-800' },
+    };
+    return badges[status] || { label: status, color: 'bg-gray-100 text-gray-800' };
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
@@ -514,22 +593,26 @@ export default function AnalyticsManagement() {
     });
   };
 
+  const getFileName = (url: string) => {
+    const parts = url.split('/');
+    return parts[parts.length - 1] || 'CV Document';
+  };
+
   const exportToCSV = () => {
-    const headers = ['ID', 'User Name', 'Email', 'File Name', 'Date', 'Score', 'Recommendations', 'Applied Jobs'];
+    const headers = ['ID', 'User Name', 'Email', 'File', 'Date', 'Score', 'Status'];
     const rows = filteredAnalyses.map(a => [
-      a.id,
-      a.userName,
-      a.userEmail,
-      a.fileName,
-      formatDate(a.analysisDate),
-      a.score,
-      a.recommendations,
-      a.appliedJobs
+      a._id,
+      a.user ? `${a.user.firstName} ${a.user.lastName}` : 'N/A',
+      a.user?.email || 'N/A',
+      getFileName(a.cvFileUrl),
+      formatDate(a.createdAt),
+      a.overallScore,
+      a.status
     ]);
 
     const csvContent = [
       headers.join(','),
-      ...rows.map(row => row.join(','))
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -561,6 +644,14 @@ export default function AnalyticsManagement() {
     );
   }
 
+  // Calculate stats
+  const avgScore = analyses.length > 0 
+    ? (analyses.reduce((sum, a) => sum + a.overallScore, 0) / analyses.length).toFixed(1)
+    : '0';
+  
+  const doneCount = analyses.filter(a => a.status === 'done').length;
+  const queuedCount = analyses.filter(a => a.status === 'queued').length;
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -572,20 +663,13 @@ export default function AnalyticsManagement() {
             Showing: <span className="font-bold">{filteredAnalyses.length}</span> results
           </p>
         </div>
-        <div className="flex gap-3">
-          <Link 
-            href="/admin/analytics/overview"
-            className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-all font-medium"
-          >
-            📊 View Dashboard
-          </Link>
-          <button
-            onClick={exportToCSV}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all font-medium"
-          >
-            📥 Export CSV
-          </button>
-        </div>
+        <button
+          onClick={exportToCSV}
+          disabled={filteredAnalyses.length === 0}
+          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          📥 Export CSV
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -596,7 +680,6 @@ export default function AnalyticsManagement() {
             <span className="text-2xl">📊</span>
           </div>
           <p className="text-3xl font-bold">{analyses.length}</p>
-          <p className="text-sm text-gray-500 mt-1">All time</p>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -604,35 +687,23 @@ export default function AnalyticsManagement() {
             <span className="text-gray-600 text-sm">Avg Score</span>
             <span className="text-2xl">⭐</span>
           </div>
-          <p className="text-3xl font-bold">
-            {analyses.length > 0 
-              ? (analyses.reduce((sum, a) => sum + a.score, 0) / analyses.length).toFixed(1)
-              : '0'}
-          </p>
-          <p className="text-sm text-gray-500 mt-1">Out of 100</p>
+          <p className="text-3xl font-bold">{avgScore}</p>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-sm">Total Jobs</span>
-            <span className="text-2xl">💼</span>
+            <span className="text-gray-600 text-sm">Completed</span>
+            <span className="text-2xl">✅</span>
           </div>
-          <p className="text-3xl font-bold">
-            {(analyses ?? []).reduce((sum, a) => sum + a.recommendations, 0)}
-          </p>
-          <p className="text-sm text-gray-500 mt-1">Recommended</p>
+          <p className="text-3xl font-bold">{doneCount}</p>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-sm">Applications</span>
-            <span className="text-2xl">📝</span>
+            <span className="text-gray-600 text-sm">In Queue</span>
+            <span className="text-2xl">⏳</span>
           </div>
-          <p className="text-3xl font-bold">
-            {(analyses ?? []).reduce((sum, a) => sum + a.appliedJobs, 0)}
-
-          </p>
-          <p className="text-sm text-gray-500 mt-1">Submitted</p>
+          <p className="text-3xl font-bold">{queuedCount}</p>
         </div>
       </div>
 
@@ -640,7 +711,7 @@ export default function AnalyticsManagement() {
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Search */}
-          <div className="md:col-span-2">
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Search by ID, Name, or Email
             </label>
@@ -681,10 +752,28 @@ export default function AnalyticsManagement() {
               <option value="poor">Needs Work (&lt;65)</option>
             </select>
           </div>
+
+          {/* Status Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Filter by Status
+            </label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Status</option>
+              <option value="done">Done</option>
+              <option value="queued">Queued</option>
+              <option value="processing">Processing</option>
+              <option value="failed">Failed</option>
+            </select>
+          </div>
         </div>
 
         {/* Active Filters Display */}
-        {(searchQuery || scoreFilter !== 'all') && (
+        {(searchQuery || scoreFilter !== 'all' || statusFilter !== 'all') && (
           <div className="mt-4 flex items-center gap-2 flex-wrap">
             <span className="text-sm text-gray-600">Active filters:</span>
             {searchQuery && (
@@ -699,8 +788,14 @@ export default function AnalyticsManagement() {
                 <button onClick={() => setScoreFilter('all')} className="hover:text-purple-900">✕</button>
               </span>
             )}
+            {statusFilter !== 'all' && (
+              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm flex items-center gap-2">
+                Status: {statusFilter}
+                <button onClick={() => setStatusFilter('all')} className="hover:text-green-900">✕</button>
+              </span>
+            )}
             <button
-              onClick={() => { setSearchQuery(''); setScoreFilter('all'); }}
+              onClick={() => { setSearchQuery(''); setScoreFilter('all'); setStatusFilter('all'); }}
               className="text-sm text-blue-600 hover:underline"
             >
               Clear all
@@ -716,42 +811,37 @@ export default function AnalyticsManagement() {
             <thead className="bg-gray-50 border-b-2 border-gray-200">
               <tr>
                 <th 
-                  onClick={() => handleSort('id')}
+                  onClick={() => handleSort('_id')}
                   className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 >
                   <div className="flex items-center gap-2">
-                    ID {sortField === 'id' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    ID {sortField === '_id' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </div>
                 </th>
-                <th 
-                  onClick={() => handleSort('userName')}
-                  className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                >
-                  <div className="flex items-center gap-2">
-                    User {sortField === 'userName' && (sortOrder === 'asc' ? '↑' : '↓')}
-                  </div>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  User
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                   File Name
                 </th>
                 <th 
-                  onClick={() => handleSort('analysisDate')}
+                  onClick={() => handleSort('createdAt')}
                   className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 >
                   <div className="flex items-center gap-2">
-                    Date {sortField === 'analysisDate' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    Date {sortField === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </div>
                 </th>
                 <th 
-                  onClick={() => handleSort('score')}
+                  onClick={() => handleSort('overallScore')}
                   className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    Score {sortField === 'score' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    Score {sortField === 'overallScore' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </div>
                 </th>
                 <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
-                  Jobs
+                  Status
                 </th>
                 <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
                   Actions
@@ -771,47 +861,57 @@ export default function AnalyticsManagement() {
                 </tr>
               ) : (
                 currentAnalyses.map((analysis) => {
-                  const badge = getScoreBadge(analysis.score);
+                  const badge = getScoreBadge(analysis.overallScore);
+                  const statusBadge = getStatusBadge(analysis.status);
                   return (
-                    <tr key={analysis.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={analysis._id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm font-bold text-gray-900">#{analysis.id}</span>
+                        <span className="text-sm font-mono text-gray-900">
+                          {analysis._id.slice(-8)}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{analysis.userName}</p>
-                          <p className="text-xs text-gray-500">{analysis.userEmail}</p>
-                        </div>
+                        {analysis.user ? (
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {analysis.user.firstName} {analysis.user.lastName}
+                            </p>
+                            <p className="text-xs text-gray-500">{analysis.user.email}</p>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">No user</span>
+                        )}
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-sm text-gray-900 max-w-xs truncate" title={analysis.fileName}>
-                          📄 {analysis.fileName}
+                        <p className="text-sm text-gray-900 max-w-xs truncate" title={analysis.cvFileUrl}>
+                          📄 {getFileName(analysis.cvFileUrl)}
                         </p>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <p className="text-sm text-gray-900">{formatDate(analysis.analysisDate)}</p>
+                        <p className="text-sm text-gray-900">{formatDate(analysis.createdAt)}</p>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <div className="flex flex-col items-center gap-1">
-                          <span className={`px-3 py-1 rounded-full text-sm font-bold border-2 ${getScoreColor(analysis.score)}`}>
-                            {analysis.score}
+                          <span className={`px-3 py-1 rounded-full text-sm font-bold border-2 ${getScoreColor(analysis.overallScore)}`}>
+                            {analysis.overallScore}
                           </span>
                           <span className="text-xs text-gray-500">{badge.icon} {badge.label}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <div className="text-sm">
-                          <p className="font-medium text-gray-900">{analysis.recommendations} rec.</p>
-                          <p className="text-xs text-gray-500">{analysis.appliedJobs} applied</p>
-                        </div>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadge.color}`}>
+                          {statusBadge.label}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <button
-                          onClick={() => {/* View details modal */}}
+                        <a
+                          href={analysis.cvFileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="text-blue-600 hover:text-blue-900 font-medium text-sm"
                         >
-                          View Details
-                        </button>
+                          View CV
+                        </a>
                       </td>
                     </tr>
                   );
